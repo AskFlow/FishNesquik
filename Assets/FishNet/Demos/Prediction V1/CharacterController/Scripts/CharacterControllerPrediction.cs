@@ -92,7 +92,7 @@ namespace FishNet.Example.Prediction.CharacterControllers
 
         private void CheckInput(out MoveData md)
         {
-            //cameraPlayer = GetComponent<Camera>();
+
             md = default;
 
             float horizontal = Input.GetAxisRaw("Horizontal");
@@ -101,18 +101,14 @@ namespace FishNet.Example.Prediction.CharacterControllers
             if (horizontal == 0f && vertical == 0f)
                 return;
 
-            Vector3 cameraForward = Vector3.Scale(cameraPlayer.transform.forward, new Vector3(1, 0, 1)).normalized;
-            // Obtenez la direction droite de la caméra
-            Vector3 cameraRight = cameraPlayer.transform.right;
-
-            // Calculez la direction du mouvement en fonction de la caméra
-            Vector3 moveDirection = (cameraForward * vertical) + (cameraRight * horizontal);
+            Vector3 directionDep = cameraPlayer.transform.forward * vertical + cameraPlayer.transform.right * horizontal;
+            directionDep.y = 0;
 
 
             md = new MoveData()
             {
-                Horizontal = moveDirection.x,
-                Vertical = moveDirection.y
+                Horizontal = directionDep.x,
+                Vertical = directionDep.y
             };
         }
 
