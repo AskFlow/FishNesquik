@@ -113,6 +113,8 @@ GameObject:
   - component: {fileID: 8695101098142122883}
   - component: {fileID: 5555220849099876605}
   - component: {fileID: 2427995578035809124}
+  - component: {fileID: 5848001317834633983}
+  - component: {fileID: 4384425952241694807}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -197,6 +199,7 @@ MonoBehaviour:
   - {fileID: 4015961740104956470}
   - {fileID: 8695101098142122883}
   - {fileID: 2427995578035809124}
+  - {fileID: 5848001317834633983}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
   <ChildNetworkObjects>k__BackingField: []
   SerializedTransformProperties:
@@ -208,7 +211,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 0
+  <PrefabId>k__BackingField: 9
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
@@ -239,8 +242,8 @@ MonoBehaviour:
   _enableTeleport: 0
   _teleportThreshold: 1
   _scaleThreshold: 1
-  _clientAuthoritative: 1
-  _sendToOwner: 1
+  _clientAuthoritative: 0
+  _sendToOwner: 0
   _enableNetworkLod: 1
   _interval: 1
   _synchronizePosition: 1
@@ -290,6 +293,38 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 4015961740104956465}
   body: {fileID: 4015961739866413607}
   endColor: {r: 0, g: 0.55506897, b: 1, a: 1}
+--- !u!114 &5848001317834633983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4015961740104956464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c9a35cdbc924de4aac2b281149b12b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 3
+  _addedNetworkObject: {fileID: 4015961740104956465}
+  _networkObjectCache: {fileID: 4015961740104956465}
+  MoveRate: 30
+--- !u!54 &4384425952241694807
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4015961740104956464}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!1 &6999696617085792780
 GameObject:
   m_ObjectHideFlags: 0
