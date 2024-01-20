@@ -2,25 +2,20 @@ using UnityEngine;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections;
-using UnityEngine.XR;
 using UnityEngine.AI;
-using FishNet;
+using static EnemyKamikaze;
 
-public class EnemyKamikaze : NetworkBehaviour
+public class EnemyDistance : NetworkBehaviour
 {
-    public float activationDistance = 2f;
-    public float explosionRadius = 5f;
-    public float speed = 4f;
+    public float shootingDistance = 10f;
+    public float speed = 5f;
     public float rotationSpeed = 5f;
-    public int explosionDamage = 20;
     public MinMaxFloat pitchDistortionMovementSpeed;
 
-    private bool hasExploded = false;
-    public Transform nearestPlayer = null;
+    private Transform nearestPlayer = null;
 
     public AudioClip movementSound;
-    public AudioClip explosionSound;
-    public GameObject explosionEffectPrefab;
+    public AudioClip deathSound;
     private AudioSource audioSource;
 
     [System.Serializable]
@@ -48,8 +43,11 @@ public class EnemyKamikaze : NetworkBehaviour
         if (IsServer)
         {
             nearestPlayer = GetNearestPlayer();
-            ChaseNearestPlayer(nearestPlayer);
-            CheckActivationDistance(nearestPlayer);
+            bool alreadyShooting = CheckActivationDistance(nearestPlayer);
+            if (!alreadyShooting)
+            {
+                ChaseNearestPlayer(nearestPlayer);
+            }
         }
 
         // Movement sound
@@ -99,64 +97,29 @@ public class EnemyKamikaze : NetworkBehaviour
         }
     }
 
-    private void CheckActivationDistance(Transform playerToAim)
+    private bool CheckActivationDistance(Transform playerToAim)
     {
         float distanceToPlayer = Vector3.Distance(transform.position, playerToAim.position);
 
-        if (distanceToPlayer < activationDistance && hasExploded == false)
+        if (distanceToPlayer < shootingDistance)
         {
             Debug.Log("close to the player");
-            hasExploded = true;
-            Suicide();
+            ShootPlayer(playerToAim);
+            return true;
         }
+        
+        return false;
     }
 
-    private void Suicide()
+    private void ShootPlayer(Transform playerToShoot)
     {
-        Collider[] players = Physics.OverlapSphere(transform.position, explosionRadius);
-
-        foreach (Collider playerCollider in players)
-        {
-            if (playerCollider.CompareTag("Player"))
-            {
-                Debug.Log("Player detected at position: " + playerCollider.transform.position);
-
-                if (playerCollider.TryGetComponent<PlayerHealth>(out PlayerHealth playerHealth))
-                {
-                    Debug.Log("Player health update!");
-                    UpdateHealthOnServer(playerHealth, -explosionDamage);
-                }
-            }
-        }
-
-        // Explosion sound
-        audioSource.Stop();
-        audioSource.PlayOneShot(explosionSound);
-
-        if (IsServer)
-        {
-            // spawn explosion effect
-            GameObject go = Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
-            ServerManager.Spawn(go);
-
-            StartCoroutine(DelayedDespawn());
-        }
+        // Shoot logic here 
+        // TODO : shoot to the player, serv side
     }
 
-    public IEnumerator DelayedDespawn()
+    private IEnumerator DelayedDespawn()
     {
         yield return new WaitForSeconds(0.1f);
         ServerManager.Despawn(gameObject);
     }
-
-    [ServerRpc(RequireOwnership = false)]
-    private void UpdateHealthOnServer(PlayerHealth playerHealth, int amountToChange)
-    {
-        if (IsServer)
-        {
-            Debug.Log("set Life");
-            playerHealth.UpdateHealth(playerHealth, amountToChange);
-        }
-    }
-
 }

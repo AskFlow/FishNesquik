@@ -22,7 +22,7 @@ public class EnemySpawnZone : NetworkBehaviour
         {
             if (enemyPrefab != null)
             {
-                HideObjectOnClients();
+                HideObjectOnServer();
                 StartCoroutine(SpawnEnemiesWithDelay(enemyPrefab, robotToHide.transform.position, numberOfEnemiesToSpawn, timeBeforeEachSpawn));
                 hasBeenActivated = true;
             }
@@ -50,9 +50,21 @@ public class EnemySpawnZone : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void HideObjectOnClients()
+    private void HideObjectOnServer()
     {
         robotToHide.SetActive(false);
+
+        RpcHideObjectOnClients();
+    }
+
+    [ObserversRpc]
+    private void RpcHideObjectOnClients()
+    {
+        // Cette méthode sera appelée sur tous les clients pour désactiver l'objet
+        if (robotToHide != null)
+        {
+            robotToHide.SetActive(false);
+        }
     }
 
     [ObserversRpc]
