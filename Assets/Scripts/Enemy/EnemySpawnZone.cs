@@ -4,26 +4,34 @@ using FishNet.Object;
 
 public class EnemySpawnZone : NetworkBehaviour
 {
-    public GameObject enemyPrefab1;
-    public GameObject enemyPrefab2;
-    public int numberOfEnemies1ToSpawn = 3;
-    public int numberOfEnemies2ToSpawn = 2;
-    public Vector3 spawnPosition = Vector3.zero;
+    public GameObject enemyPrefab;
+    public int numberOfEnemiesToSpawn = 3;
+    [SerializeField]
+    private float timeBeforeEachSpawn = 2f;
+    [SerializeField]
+    private GameObject spawnPosition;
+    [SerializeField]
+    private GameObject robotToHide;
     private bool hasBeenActivated = false;
-
+    [HideInInspector]
     public GameObject spawnedObject;
 
     private void OnTriggerEnter(Collider other)
     {
         if (IsServer && other.CompareTag("Player") && hasBeenActivated == false)
         {
-            StartCoroutine(SpawnEnemiesWithDelay(enemyPrefab1, spawnPosition, numberOfEnemies1ToSpawn, 2f));
-            StartCoroutine(SpawnEnemiesWithDelay(enemyPrefab2, spawnPosition, numberOfEnemies2ToSpawn, 2f));
-            hasBeenActivated = true;
+            if (enemyPrefab != null)
+            {
+                HideObjectOnClients();
+                StartCoroutine(SpawnEnemiesWithDelay(enemyPrefab, robotToHide.transform.position, numberOfEnemiesToSpawn, timeBeforeEachSpawn));
+                hasBeenActivated = true;
+            }
+            else
+            {
+                Debug.LogWarning("'enemyPrefab' est null.");
+            }
         }
-
     }
-
     private IEnumerator SpawnEnemiesWithDelay(GameObject enemyPrefab, Vector3 spawnPosition, int numberOfEnemies, float delay)
     {
         for (int i = 0; i < numberOfEnemies; i++)
@@ -39,6 +47,12 @@ public class EnemySpawnZone : NetworkBehaviour
         GameObject spawnedEnemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
         ServerManager.Spawn(spawnedEnemy);
         SetSpawnedObject(spawnedEnemy, script);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void HideObjectOnClients()
+    {
+        robotToHide.SetActive(false);
     }
 
     [ObserversRpc]

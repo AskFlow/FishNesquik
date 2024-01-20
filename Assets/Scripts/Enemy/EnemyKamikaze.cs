@@ -10,12 +10,12 @@ public class EnemyKamikaze : NetworkBehaviour
 {
     public float activationDistance = 2f;
     public float explosionRadius = 5f;
-    public float speed = 5f;
+    public float speed = 4f;
+    public float rotationSpeed = 5f;
     public int explosionDamage = 20;
 
     // verification bool
     private bool hasExploded = false;
-    private NavMeshAgent navMeshAgent;
     public Transform nearestPlayer = null;
 
     public AudioClip movementSound;
@@ -39,13 +39,6 @@ public class EnemyKamikaze : NetworkBehaviour
 
     private void Start()
     {
-        navMeshAgent = GetComponent<NavMeshAgent>();
-
-        if (navMeshAgent == null)
-        {
-            Debug.LogError("NavMeshAgent is missing on the enemy object.");
-        }
-
         audioSource = gameObject.GetComponent<AudioSource>();
         audioSource.clip = movementSound;
         audioSource.loop = true;
@@ -85,9 +78,19 @@ public class EnemyKamikaze : NetworkBehaviour
 
         if (nearestPlayer != null)
         {
-            Vector3 direction = nearestPlayer.position - transform.position;
-            direction.Normalize();
-            transform.Translate(direction * speed * Time.deltaTime);
+            // Movement to the player
+            Vector3 directionToPlayer = nearestPlayer.position - transform.position;
+            directionToPlayer.y = 0f;
+
+            // Rotation to look at the player
+            if (directionToPlayer.magnitude > 0.1f)
+            {
+                Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer.normalized);
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+            }
+
+            // Movement
+            transform.Translate(directionToPlayer.normalized * speed * Time.deltaTime, Space.World);
         }
 
         return nearestPlayer;
