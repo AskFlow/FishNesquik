@@ -15,15 +15,6 @@ public class PlayerHealth : NetworkBehaviour
             GetComponent<PlayerHealth>().enabled = false;
     }
 
-    private void Update()
-    {
-
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            UpdateHealth(this, -1);
-        }
-    }
-
     [ServerRpc(RequireOwnership = false)]
     public void UpdateHealth(PlayerHealth script, int amountToChange)
     {
