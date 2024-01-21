@@ -49,7 +49,7 @@ public class EnemySpawnZone : NetworkBehaviour
         SetSpawnedObject(spawnedEnemy, script);
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [ServerRpc(RequireOwnership = false)] // on the serv
     private void HideObjectOnServer()
     {
         robotToHide.SetActive(false);
@@ -57,10 +57,9 @@ public class EnemySpawnZone : NetworkBehaviour
         RpcHideObjectOnClients();
     }
 
-    [ObserversRpc]
+    [ObserversRpc] // on all clients
     private void RpcHideObjectOnClients()
     {
-        // Cette méthode sera appelée sur tous les clients pour désactiver l'objet
         if (robotToHide != null)
         {
             robotToHide.SetActive(false);

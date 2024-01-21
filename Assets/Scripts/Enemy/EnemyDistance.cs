@@ -3,7 +3,6 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections;
 using UnityEngine.AI;
-using static EnemyKamikaze;
 
 public class EnemyDistance : NetworkBehaviour
 {
