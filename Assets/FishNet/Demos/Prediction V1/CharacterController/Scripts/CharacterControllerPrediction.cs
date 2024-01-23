@@ -92,7 +92,6 @@ namespace FishNet.Example.Prediction.CharacterControllers
 
         private void CheckInput(out MoveData md)
         {
-
             md = default;
 
             float horizontal = Input.GetAxisRaw("Horizontal");
@@ -101,9 +100,9 @@ namespace FishNet.Example.Prediction.CharacterControllers
             if (horizontal == 0f && vertical == 0f)
                 return;
 
-            Vector3 directionDep = cameraPlayer.transform.forward * vertical + cameraPlayer.transform.right * horizontal;
-            directionDep.y = 0;
 
+
+            Vector3 directionDep = cameraPlayer.transform.right * horizontal + cameraPlayer.transform.forward * vertical;
 
             md = new MoveData()
             {
