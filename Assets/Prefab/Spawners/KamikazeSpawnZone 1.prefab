@@ -341,7 +341,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7427597725533231440}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.39, z: 0}
+  m_LocalPosition: {x: 0, y: 1.02, z: 0}
   m_LocalScale: {x: 55.800056, y: 55.800083, z: 55.800083}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -371,7 +371,7 @@ MonoBehaviour:
   <ParentNetworkObject>k__BackingField: {fileID: 1314781090412268596}
   <ChildNetworkObjects>k__BackingField: []
   SerializedTransformProperties:
-    Position: {x: 0, y: 1.39, z: 0}
+    Position: {x: 0, y: 1.02, z: 0}
     Rotation: {x: 0, y: 0, z: 0, w: 1}
     LocalScale: {x: 55.800056, y: 55.800083, z: 55.800083}
   _isNetworked: 1

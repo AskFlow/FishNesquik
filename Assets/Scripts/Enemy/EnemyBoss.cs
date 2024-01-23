@@ -3,10 +3,12 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections;
 using UnityEngine.AI;
+using System;
+using System.Collections.Generic;
 
 public class EnemyBoss : NetworkBehaviour
 {
-    public float speed = 5f;
+    public float speed = 2f;
     public float rotationSpeed = 5f;
     public float wheelRotationSpeed = 100f;
     public MinMaxFloat pitchDistortionMovementSpeed;
@@ -15,6 +17,12 @@ public class EnemyBoss : NetworkBehaviour
     private AudioSource audioSource;
     private Transform nearestPlayer;
     private bool isPerformingAttack = false;
+    private float minDistance = 5f;
+    public bool mustRotatesWheels;
+
+    private bool isPerformingCharge = false;
+    private List<GameObject> playersHitByCharge = new List<GameObject>();
+
 
     public GameObject leftWheel;
     public GameObject rightWheel;
@@ -24,7 +32,7 @@ public class EnemyBoss : NetworkBehaviour
 
     public int bulletAttackCount = 5;
     public float bulletAttackSpeed = 10f;
-    public float chargeAttackDamage = 30f;
+    public int chargeAttackDamage = 30;
     public float jumpAttackRadius = 5f;
     public float jumpAttackDamage = 20f;
 
@@ -48,25 +56,38 @@ public class EnemyBoss : NetworkBehaviour
 
         // Start the first attack
         Debug.Log("start");
-        StartCoroutine(PerformRandomAttack());
+        StartCoroutine(PerformRandomAttack(-1));
     }
 
     private void Update()
     {
         if (IsServer)
         {
-            nearestPlayer = GetNearestPlayer();
-            ChaseNearestPlayer(nearestPlayer);
-        }
+            if (!isPerformingAttack)
+            {
+                nearestPlayer = GetNearestPlayer();
+                ChaseNearestPlayer(nearestPlayer);
+            }
 
-        RotateWheels(wheelRotationSpeed);
+            if (mustRotatesWheels)
+            {
+                RotateWheels(wheelRotationSpeed);
 
-        // Movement sound
-        audioSource.pitch = Mathf.Lerp(pitchDistortionMovementSpeed.Min, pitchDistortionMovementSpeed.Max, speed);
+                // Movement sound
+                audioSource.pitch = Mathf.Lerp(pitchDistortionMovementSpeed.Min, pitchDistortionMovementSpeed.Max, speed);
 
-        if (!audioSource.isPlaying)
-        {
-            audioSource.Play();
+                if (!audioSource.isPlaying)
+                {
+                    audioSource.Play();
+                }
+            }
+            else
+            {
+                if (audioSource.isPlaying)
+                {
+                    audioSource.Stop();
+                }
+            }
         }
     }
 
@@ -98,35 +119,56 @@ public class EnemyBoss : NetworkBehaviour
     {
         if (nearestPlayer != null)
         {
-            // Movement to the player
+            // Direction to the player
             Vector3 directionToPlayer = nearestPlayer.position - transform.position;
             directionToPlayer.y = 0f;
 
-            // Rotation to look at the player
-            if (directionToPlayer.magnitude > 0.1f)
+            // should continue to chase?
+            if (directionToPlayer.magnitude > minDistance)
             {
-                Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer.normalized);
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
-            }
+                // Rotation to look at the player
+                if (directionToPlayer.magnitude > 0.1f)
+                {
+                    Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer.normalized);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+                }
 
-            // Movement
-            transform.Translate(directionToPlayer.normalized * speed * Time.deltaTime, Space.World);
+                // Mouvement
+                transform.Translate(directionToPlayer.normalized * speed * Time.deltaTime, Space.World);
+
+                mustRotatesWheels = true;
+            }
+            else
+            {
+                // special attack?
+                Debug.Log("Boss stopped chasing player.");
+            }
         }
     }
 
-    private IEnumerator PerformRandomAttack()
-    {
-        Debug.Log("start coroutine");
-        isPerformingAttack = true;
 
+    // ------------------------------------------------------------------------------------------
+    // Attacks
+    // ------------------------------------------------------------------------------------------
+
+    private IEnumerator PerformRandomAttack(int attackType)
+    {
         // Wait for a random time before performing the next attack
-        yield return new WaitForSeconds(Random.Range(minTimeBetweenAttacks, maxTimeBetweenAttacks));
-        Debug.Log("finish coroutine");
-        // Randomly choose the next attack type
-        int randomAttackType = Random.Range(0, 3);
-        Debug.Log("Attack chosen : " + randomAttackType);
+        yield return new WaitForSeconds(UnityEngine.Random.Range(minTimeBetweenAttacks, maxTimeBetweenAttacks));
+
+        mustRotatesWheels = false;
+        isPerformingAttack = true;
+        Debug.Log("Start Attack");
+
+        if(attackType != 0 && attackType != 1 && attackType != 2)
+        {
+            // Randomly choose the next attack type
+            attackType = UnityEngine.Random.Range(0, 3);
+            Debug.Log("Attack chosen : " + attackType);
+        }
+        
         // Perform the chosen attack
-        switch (randomAttackType)
+        switch (attackType)
         {
             case 0:
                 Debug.Log("Shooting Attack");
@@ -143,6 +185,31 @@ public class EnemyBoss : NetworkBehaviour
         }
     }
 
+    private void DealPlayerDamage(GameObject player, int damage)
+    {
+        // Vérifie si le joueur a le composant PlayerHealth
+        if (player.TryGetComponent<PlayerHealth>(out PlayerHealth playerHealth))
+        {
+            Debug.Log("update health ! ");
+            // Inflige des dégâts au joueur
+            UpdateHealthOnServer(playerHealth, -damage);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void UpdateHealthOnServer(PlayerHealth playerHealth, int amountToChange)
+    {
+        if (IsServer)
+        {
+            Debug.Log("set Life");
+            playerHealth.UpdateHealth(playerHealth, amountToChange);
+        }
+    }
+
+
+    // ------------------------------------------------------------------------------------------
+    // Attacks Types
+    // ------------------------------------------------------------------------------------------
     private IEnumerator BulletAttack()
     {
         for (int i = 0; i < bulletAttackCount; i++)
@@ -155,45 +222,64 @@ public class EnemyBoss : NetworkBehaviour
 
         // Continue with the next attack
         isPerformingAttack = false;
-        StartCoroutine(PerformRandomAttack());
+        StartCoroutine(PerformRandomAttack(-1));
     }
+
 
     private IEnumerator ChargeAttack()
     {
-
-        // Enregistre la position du joueur cible
+        // Record the target player's position
         Vector3 targetPosition = nearestPlayer.position;
 
-        // Change la vitesse de rotation des roues
-        wheelRotationSpeed = wheelRotationSpeed * 3;
+        // Change the wheel rotation speed
+        wheelRotationSpeed = wheelRotationSpeed * 10;
+        mustRotatesWheels = true;
 
-        // Attend 2 secondes avant de commencer la charge
+        // Wait for 2 seconds before starting the charge
         yield return new WaitForSeconds(2f);
 
-        // Charge vers la position du joueur cible
-        float chargeSpeed = 15f; // Vitesse de la charge (ajuster selon les besoins)
-        float chargeDuration = 1f; // Durée de la charge (ajuster selon les besoins)
+        isPerformingCharge = true;
+        playersHitByCharge.Clear();
+        Debug.Log("CHAAARGE");
+
+        // Charge towards the target player's position
+        float chargeSpeed = 15f;
+        float chargeDuration = 1f;
 
         float elapsedTime = 0f;
 
         while (elapsedTime < chargeDuration)
         {
-            // Déplace le boss vers la position du joueur cible
+            // Move the boss towards the target player's position
             transform.position = Vector3.Lerp(transform.position, targetPosition, (elapsedTime / chargeDuration) * chargeSpeed * Time.deltaTime);
-
-            // Incrémente le temps écoulé
             elapsedTime += Time.deltaTime;
 
             yield return null;
         }
 
-        // Remet la vitesse de rotation par défaut
-        wheelRotationSpeed = wheelRotationSpeed / 3;
+        // Reset the wheel rotation speed
+        wheelRotationSpeed = wheelRotationSpeed / 10;
 
-        // Continue avec la prochaine attaque
+        // Continue with the next attack
         isPerformingAttack = false;
-        StartCoroutine(PerformRandomAttack());
+        StartCoroutine(PerformRandomAttack(-1));
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("Player? ");
+        if (isPerformingCharge && other.CompareTag("Player") && !playersHitByCharge.Contains(other.gameObject))
+        {
+            Debug.Log("Hit player! ");
+            // If the boss is charging and the player has not been hit yet
+            // Add the player to the list of hit players
+            playersHitByCharge.Add(other.gameObject);
+
+            // Inflict damage to the player
+            DealPlayerDamage(other.gameObject, chargeAttackDamage);
+        }
+    }
+
 
 
     private IEnumerator JumpAttack()
@@ -204,12 +290,19 @@ public class EnemyBoss : NetworkBehaviour
 
         // Continue with the next attack
         isPerformingAttack = false;
-        StartCoroutine(PerformRandomAttack());
+        StartCoroutine(PerformRandomAttack(-1));
     }
 
+
+    // ------------------------------------------------------------------------------------------
+    // Utils
+    // ------------------------------------------------------------------------------------------
     private IEnumerator DelayedDespawn()
     {
         yield return new WaitForSeconds(0.1f);
         ServerManager.Despawn(gameObject);
     }
+
+
+
 }
