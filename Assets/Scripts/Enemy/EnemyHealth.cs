@@ -1,15 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using UnityEngine;
 
 public class EnemyHealth : NetworkBehaviour
 {
-    [SyncVar] public int health = 100;
+    [SyncVar]
+    public int health = 100;
 
     private EnemyKamikaze kamikazeScript;
-
 
     private void Start()
     {
@@ -24,12 +22,12 @@ public class EnemyHealth : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void UpdateHealth(EnemyHealth script, int amountToChange)
+    public void UpdateHealth(int amountToChange)
     {
-        script.health += amountToChange;
+        health += amountToChange;
 
         // Is dead?
-        if (script.health <= 0)
+        if (health <= 0)
         {
             if (kamikazeScript != null)
             {

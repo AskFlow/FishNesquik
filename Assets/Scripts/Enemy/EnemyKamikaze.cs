@@ -113,18 +113,26 @@ public class EnemyKamikaze : NetworkBehaviour
 
     private void Suicide()
     {
-        Collider[] players = Physics.OverlapSphere(transform.position, explosionRadius);
+        Collider[] targets = Physics.OverlapSphere(transform.position, explosionRadius);
 
-        foreach (Collider playerCollider in players)
+        foreach (Collider targetsCollider in targets)
         {
-            if (playerCollider.CompareTag("Player"))
+            if (targetsCollider.CompareTag("Player"))
             {
-                Debug.Log("Player detected at position: " + playerCollider.transform.position);
+                Debug.Log("Player detected at position: " + targetsCollider.transform.position);
 
-                if (playerCollider.TryGetComponent<PlayerHealth>(out PlayerHealth playerHealth))
+                if (targetsCollider.TryGetComponent<PlayerHealth>(out PlayerHealth playerHealth))
                 {
                     Debug.Log("Player health update!");
                     UpdateHealthOnServer(playerHealth, -explosionDamage);
+                }
+            }
+            if (targetsCollider.CompareTag("Enemy"))
+            {
+                if (targetsCollider.TryGetComponent<EnemyHealth>(out EnemyHealth enemyHealth))
+                {
+                    Debug.Log("Enemy health update!");
+                    UpdateHealthOnEnemy(enemyHealth, -explosionDamage);
                 }
             }
         }
@@ -159,4 +167,13 @@ public class EnemyKamikaze : NetworkBehaviour
         }
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void UpdateHealthOnEnemy(EnemyHealth enemyHealth, int amountToChange)
+    {
+        if (IsServer)
+        {
+            Debug.Log("Setting Life");
+            enemyHealth.UpdateHealth(amountToChange);
+        }
+    }
 }
