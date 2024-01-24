@@ -9,8 +9,9 @@ public class PlayerShoot : NetworkBehaviour
     [SerializeField] private bool isServerAuth;
     [SerializeField] private int damage = 10;
     [SerializeField] private ParticleSystem hitParticle;
+    [SerializeField] private string tagToHit;
 
-    private Camera mainCamera;
+    public Camera playerCamera;
 
     public override void OnStartClient()
     {
@@ -21,7 +22,6 @@ public class PlayerShoot : NetworkBehaviour
             return;
         }
 
-        mainCamera = Camera.main;
     }
 
     private void Update()
@@ -29,9 +29,12 @@ public class PlayerShoot : NetworkBehaviour
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             if (isServerAuth)
-                ServerShoot(mainCamera.transform.position, Camera.main.transform.forward);
+                ServerShoot(playerCamera.transform.position, Camera.main.transform.forward);
             else {
-                Debug.Log("rentrer local");
+                if (playerCamera == null) 
+                { 
+                    playerCamera = gameObject.GetComponent<Camera>();
+                }
                 LocalShoot();
             }
         }
@@ -63,15 +66,19 @@ public class PlayerShoot : NetworkBehaviour
     void LocalShoot()
     {
         // Last part is to have the shot be in front of our own player and not inside of him
-        Vector3 shotPosition = mainCamera.transform.position + mainCamera.transform.forward * 0.5f;
-        if (Physics.Raycast(shotPosition, mainCamera.transform.forward, out RaycastHit hit, Mathf.Infinity))
+        Vector3 shotPosition = playerCamera.transform.position + playerCamera.transform.forward * 0.5f;
+        if (Physics.Raycast(shotPosition, playerCamera.transform.forward, out RaycastHit hit, Mathf.Infinity))
         {
-            if (hit.transform.TryGetComponent(out PlayerShoot otherPlayer) && otherPlayer != this)
+            Debug.DrawLine(shotPosition, hit.point, Color.red, 2.0f); // Dessine une ligne rouge pendant 1 seconde
+            Transform resultHit = hit.transform;
+            if (resultHit.parent.CompareTag(tagToHit) && resultHit != this.gameObject)
             {
-                otherPlayer.DamagePlayer(damage);
+                resultHit.parent.TryGetComponent(out PlayerShoot health);
+                health.DamagePlayer(damage);
                 Instantiate(hitParticle, hit.point, Quaternion.identity);
-                Debug.Log($"You've hit player {otherPlayer.Owner.ClientId} for {damage}. Calculations done locally");
+                //Debug.Log($"You've hit player {otherPlayer.Owner.ClientId} for {damage}. Calculations done locally");
             }
+
         }
     }
 
