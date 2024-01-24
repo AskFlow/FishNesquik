@@ -1,5 +1,6 @@
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using System.Collections;
 using UnityEngine;
 
 public class EnemyHealth : NetworkBehaviour
@@ -7,11 +8,46 @@ public class EnemyHealth : NetworkBehaviour
     [SyncVar]
     public int health = 100;
 
-    public override void OnStartClient()
+    [SerializeField]
+    private Animator animator;
+    [SerializeField]
+    private float timeBeforeDestroy = 3.0f;
+
+
+    private void Update()
     {
-        base.OnStartClient();
-        if (!base.IsOwner)
-            GetComponent<EnemyHealth>().enabled = false;
+        if (health <= 0)
+        {
+            // TODO : Handle Death
+            StartCoroutine(DeathCoroutine());
+        }
+    }
+
+    public IEnumerator DeathCoroutine()
+    {
+        animator.SetBool("IsDead", true);
+        if(TryGetComponent(out EnemyKamikaze stopMovementKamikaze))
+        {
+            stopMovementKamikaze.enabled = false;
+
+        }
+        if(TryGetComponent(out EnemyDistance stopMovementDistance))
+        {
+            stopMovementDistance.enabled = false;
+        }
+        if (TryGetComponent(out EnemyBoss stopMovementBoss))
+        {
+            stopMovementBoss.enabled = false;
+        }
+        Canvas healthUI = GetComponentInChildren<Canvas>();
+        healthUI.enabled = false;
+        while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Die"))
+        {
+            yield return null;
+        }
+        yield return new WaitForSeconds(timeBeforeDestroy);
+
+        Destroy(gameObject);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -19,10 +55,5 @@ public class EnemyHealth : NetworkBehaviour
     {
         health += amountToChange;
 
-        // Is dead?
-        if (health <= 0)
-        {
-            // TODO : Handle Death
-        }
     }
 }

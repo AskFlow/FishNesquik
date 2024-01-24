@@ -311,7 +311,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 4015961740104956465}
   _networkObjectCache: {fileID: 4015961740104956465}
   isServerAuth: 0
-  damage: 10
+  damage: 100
   hitParticle: {fileID: 19886758, guid: 8c27aeead6d968e4ba986702d6b84335, type: 3}
   tagToHit: Enemy
   playerCamera: {fileID: 566374934778758699}

@@ -715,6 +715,8 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: -6083907376259441108}
   _networkObjectCache: {fileID: -6083907376259441108}
   health: 500
+  animator: {fileID: 95511139021925374}
+  timeBeforeDestroy: 3
 --- !u!114 &-8827165486529057407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -733,11 +735,11 @@ MonoBehaviour:
   shootingDistance: 10
   speed: 5
   rotationSpeed: 5
+  movementSound: {fileID: 8300000, guid: be7bcab1bdc983a40af44fa2330c00dc, type: 3}
+  deathSound: {fileID: 8300000, guid: 623b7f0c57d1aa74e93ace127321a847, type: 3}
   pitchDistortionMovementSpeed:
     Min: 0
     Max: 0
-  movementSound: {fileID: 8300000, guid: be7bcab1bdc983a40af44fa2330c00dc, type: 3}
-  deathSound: {fileID: 8300000, guid: 623b7f0c57d1aa74e93ace127321a847, type: 3}
 --- !u!114 &8075528519803460479
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -826,6 +826,8 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 7701979001832666281}
   _networkObjectCache: {fileID: 7701979001832666281}
   health: 50
+  animator: {fileID: 95435075854021746}
+  timeBeforeDestroy: 3
 --- !u!114 &8506192745422644373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -842,16 +844,15 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 7701979001832666281}
   _networkObjectCache: {fileID: 7701979001832666281}
   activationDistance: 3
-  explosionRadius: 5
   speed: 5
   rotationSpeed: 5
-  explosionDamage: 20
+  movementSound: {fileID: 8300000, guid: 0cd4c9657dffeff46b21daf2fc3fabcd, type: 3}
+  explosionSound: {fileID: 8300000, guid: e7b53fcf073b971498c12f242c7fdca2, type: 3}
   pitchDistortionMovementSpeed:
     Min: 1
     Max: 1.5
-  nearestPlayer: {fileID: 0}
-  movementSound: {fileID: 8300000, guid: 0cd4c9657dffeff46b21daf2fc3fabcd, type: 3}
-  explosionSound: {fileID: 8300000, guid: e7b53fcf073b971498c12f242c7fdca2, type: 3}
+  explosionRadius: 5
+  explosionDamage: 20
   explosionEffectPrefab: {fileID: 191186, guid: 079954accd64b32419ec069129c81273, type: 3}
 --- !u!114 &1625648962571148570
 MonoBehaviour:
@@ -1131,6 +1132,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4683777739063854}
     m_Modifications:
+    - target: {fileID: 1158561437838534595, guid: 7f60e7b0bb550074c979631ac7b8363e, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1950060566169643709, guid: 7f60e7b0bb550074c979631ac7b8363e, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1142,6 +1147,10 @@ PrefabInstance:
     - target: {fileID: 6275025535484674141, guid: 7f60e7b0bb550074c979631ac7b8363e, type: 3}
       propertyPath: m_Name
       value: CanvashHealth
+      objectReference: {fileID: 0}
+    - target: {fileID: 6866987529792668158, guid: 7f60e7b0bb550074c979631ac7b8363e, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7556791628908158911, guid: 7f60e7b0bb550074c979631ac7b8363e, type: 3}
       propertyPath: m_Pivot.x

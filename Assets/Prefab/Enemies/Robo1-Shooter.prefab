@@ -601,6 +601,8 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 4746802322451413754}
   _networkObjectCache: {fileID: 4746802322451413754}
   health: 100
+  animator: {fileID: 95491499780641650}
+  timeBeforeDestroy: 3
 --- !u!114 &8853060736428157785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -619,11 +621,11 @@ MonoBehaviour:
   shootingDistance: 10
   speed: 2
   rotationSpeed: 5
+  movementSound: {fileID: 8300000, guid: be7bcab1bdc983a40af44fa2330c00dc, type: 3}
+  deathSound: {fileID: 8300000, guid: 623b7f0c57d1aa74e93ace127321a847, type: 3}
   pitchDistortionMovementSpeed:
     Min: 0
     Max: 0
-  movementSound: {fileID: 8300000, guid: be7bcab1bdc983a40af44fa2330c00dc, type: 3}
-  deathSound: {fileID: 8300000, guid: 623b7f0c57d1aa74e93ace127321a847, type: 3}
 --- !u!114 &869408121549920783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -980,6 +982,10 @@ PrefabInstance:
     - target: {fileID: 6275025535484674141, guid: 7f60e7b0bb550074c979631ac7b8363e, type: 3}
       propertyPath: m_Name
       value: CanvashHealth
+      objectReference: {fileID: 0}
+    - target: {fileID: 6866987529792668158, guid: 7f60e7b0bb550074c979631ac7b8363e, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7556791628908158911, guid: 7f60e7b0bb550074c979631ac7b8363e, type: 3}
       propertyPath: m_Pivot.x
