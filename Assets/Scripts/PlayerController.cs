@@ -10,7 +10,6 @@ public class PlayerController : NetworkBehaviour
     public float walkingSpeed = 7.5f;
     public float runningSpeed = 11.5f;
     public float jumpSpeed = 8.0f;
-    public float gravity = 20.0f;
     public float lookSpeed = 2.0f;
     public float lookXLimit = 45.0f;
 
@@ -23,7 +22,7 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField]
     private float cameraYOffset = 0.4f;
-    private Camera playerCamera;
+    public Camera playerCamera;
 
     [Header ("Grenades")]
     public FragGrenade grenadePrefab;
@@ -35,16 +34,19 @@ public class PlayerController : NetworkBehaviour
     public override void OnStartClient()
     {
         base.OnStartClient();
+        if (!IsOwner)
+        {
+            playerCamera.gameObject.SetActive(false);
+        }
+
         if (base.IsOwner)
         {
-            playerCamera = Camera.main;
+            if(playerCamera == null)
+                playerCamera = gameObject.GetComponent<Camera>();
             playerCamera.transform.position = new Vector3(transform.position.x, transform.position.y + cameraYOffset, transform.position.z);
             playerCamera.transform.SetParent(transform);
         }
-        else
-        {
-            gameObject.GetComponent<PlayerController>().enabled = false;
-        }
+
     }
 
     void Start()
@@ -61,8 +63,10 @@ public class PlayerController : NetworkBehaviour
 
     void Update()
     {
+        if (!IsOwner)
+            return;
         bool isRunning = false;
-
+        moveDirection = Vector3.zero;
         // Press Left Shift to run
         isRunning = Input.GetKey(KeyCode.LeftShift);
 
@@ -72,23 +76,12 @@ public class PlayerController : NetworkBehaviour
 
         float curSpeedX = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Vertical") : 0;
         float curSpeedY = canMove ? (isRunning ? runningSpeed : walkingSpeed) * Input.GetAxis("Horizontal") : 0;
-        float movementDirectionY = moveDirection.y;
         moveDirection = (forward * curSpeedX) + (right * curSpeedY);
 
         if (Input.GetButton("Jump") && canMove && characterController.isGrounded)
         {
             moveDirection.y = jumpSpeed;
         }
-        else
-        {
-            moveDirection.y = movementDirectionY;
-        }
-
-        if (!characterController.isGrounded)
-        {
-            moveDirection.y -= gravity * Time.deltaTime;
-        }
-
         // Move the controller
         characterController.Move(moveDirection * Time.deltaTime);
 
