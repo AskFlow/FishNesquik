@@ -5,13 +5,25 @@ using UnityEngine;
 
 public class PlayerShoot : NetworkBehaviour
 {
-    [SyncVar] public int health = 100;
     [SerializeField] private bool isServerAuth;
     [SerializeField] private int damage = 10;
     [SerializeField] private ParticleSystem hitParticle;
     [SerializeField] private string tagToHit;
 
     public Camera playerCamera;
+
+
+    [Header("Grenades")]
+    public FragGrenade grenadePrefab;
+    public int maxGrenadeCount = 3;
+    private int currentGrenadeCount;
+
+
+    private void Start()
+    {
+        // Initialise nb of grenades
+        currentGrenadeCount = maxGrenadeCount;
+    }
 
     public override void OnStartClient()
     {
@@ -38,6 +50,12 @@ public class PlayerShoot : NetworkBehaviour
                 LocalShoot();
             }
         }
+        // throw grenade
+        if (Input.GetKeyDown(KeyCode.G) && currentGrenadeCount > 0)
+        {
+            Debug.Log("G");
+            ThrowGrenadeServerRpc();
+        }
     }
 
     [ServerRpc]
@@ -47,11 +65,11 @@ public class PlayerShoot : NetworkBehaviour
         Vector3 shotPosition = camPosition + shootForward * 0.5f;
         if (Physics.Raycast(shotPosition, shootForward, out RaycastHit hit, Mathf.Infinity))
         {
-            if (hit.transform.TryGetComponent(out PlayerShoot otherPlayer) && otherPlayer != this)
+            if (hit.transform.TryGetComponent(out EnemyHealth otherEnemy) && otherEnemy != this)
             {
                 // We've hit another player that isn't the person shooting
-                otherPlayer.health -= damage;
-                HitConfirmation(sender, otherPlayer.Owner.ClientId, hit.point);
+                otherEnemy.health -= damage;
+                HitConfirmation(sender, otherEnemy.Owner.ClientId, hit.point);
             }
         }
     }
@@ -71,10 +89,11 @@ public class PlayerShoot : NetworkBehaviour
         {
             Debug.DrawLine(shotPosition, hit.point, Color.red, 2.0f); // Dessine une ligne rouge pendant 1 seconde
             Transform resultHit = hit.transform;
-            if (resultHit.parent.CompareTag(tagToHit) && resultHit != this.gameObject)
+            if (resultHit.CompareTag(tagToHit) && resultHit != this.gameObject && IsServer)
             {
-                resultHit.parent.TryGetComponent(out PlayerShoot health);
-                health.DamagePlayer(damage);
+                Debug.Log("Attack");
+
+                ApplyDamage(resultHit, damage);
                 Instantiate(hitParticle, hit.point, Quaternion.identity);
                 //Debug.Log($"You've hit player {otherPlayer.Owner.ClientId} for {damage}. Calculations done locally");
             }
@@ -83,8 +102,54 @@ public class PlayerShoot : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void DamagePlayer(int damage)
+    void ThrowGrenadeServerRpc()
     {
-        health -= damage;
+        Debug.Log("Throw grenade");
+        // Server side
+        if (currentGrenadeCount <= 0)
+            return;
+
+        if (grenadePrefab != null)
+        {
+            Vector3 spawnPosition = transform.position + transform.forward * 6.0f;
+
+            FragGrenade grenadeInstance = Instantiate(grenadePrefab, spawnPosition, Quaternion.identity);
+            currentGrenadeCount--;
+
+            // Replicates grenade
+            ServerManager.Spawn(grenadeInstance.gameObject);
+        }
+    }
+
+    [Client]
+    public void RechargeGrenades(int amount)
+    {
+        currentGrenadeCount = Mathf.Min(currentGrenadeCount + amount, maxGrenadeCount);
+        // Debug.Log("Grenades rechargées. Nombre actuel de grenades : " + currentGrenadeCount);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void ApplyDamage(Transform resultHit, int damage)
+    {
+        Debug.Log("Apply Damage");
+        if (resultHit.CompareTag("Enemy"))
+        {
+            Debug.Log("TAG");
+            if (resultHit.TryGetComponent<EnemyHealth>(out EnemyHealth enemyHealth))
+            {
+                UpdateHealthOnEnemy(enemyHealth, -damage);
+            }
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void UpdateHealthOnEnemy(EnemyHealth enemyHealth, int amountToChange)
+    {
+        Debug.Log("Update Health");
+
+        if (IsServer)
+        {
+            enemyHealth.UpdateHealth(amountToChange);
+        }
     }
 }

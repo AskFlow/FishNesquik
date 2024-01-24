@@ -7,13 +7,6 @@ public class EnemyHealth : NetworkBehaviour
     [SyncVar]
     public int health = 100;
 
-    private EnemyKamikaze kamikazeScript;
-
-    private void Start()
-    {
-        kamikazeScript = GetComponent<EnemyKamikaze>();
-    }
-
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -29,10 +22,7 @@ public class EnemyHealth : NetworkBehaviour
         // Is dead?
         if (health <= 0)
         {
-            if (kamikazeScript != null)
-            {
-                kamikazeScript.DelayedDespawn();
-            }
+            // TODO : Handle Death
         }
     }
 }
