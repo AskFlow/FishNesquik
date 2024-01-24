@@ -12,11 +12,14 @@ public class PlayerShoot : NetworkBehaviour
 
     public Camera playerCamera;
 
+    [Header("Shoot style")]
+    private bool isRaycast = true;
 
     [Header("Grenades")]
     public FragGrenade grenadePrefab;
     public int maxGrenadeCount = 3;
     private int currentGrenadeCount;
+
 
 
     private void Start()

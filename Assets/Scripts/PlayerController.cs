@@ -65,6 +65,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (!IsOwner)
             return;
+
         bool isRunning = false;
         moveDirection = Vector3.zero;
         // Press Left Shift to run
