@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using FishNet.Connection;
 using FishNet.Object;
 
 //This is made by Bobsi Unity - Youtube
@@ -27,10 +26,9 @@ public class PlayerController : NetworkBehaviour
     private Camera playerCamera;
 
     [Header ("Grenades")]
+    public FragGrenade grenadePrefab;
     public int maxGrenadeCount = 3;
     private int currentGrenadeCount;
-
-    public FragGrenade grenadePrefab;  // Référence au script de la grenade
 
 
 
@@ -106,7 +104,6 @@ public class PlayerController : NetworkBehaviour
         // throw grenade
         if (Input.GetKeyDown(KeyCode.G) && currentGrenadeCount > 0)
         {
-            // Appeler la fonction sur le serveur
             ThrowGrenadeServerRpc();
         }
     }
@@ -114,18 +111,27 @@ public class PlayerController : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     void ThrowGrenadeServerRpc()
     {
-        // Instancier la grenade à la position du joueur avec une direction appropriée
+        // Server side
+        if (currentGrenadeCount <= 0)
+            return;
+
         if (grenadePrefab != null)
         {
-            // Instancier la grenade à une position devant le joueur (ajuste la position selon tes besoins)
-            Vector3 spawnPosition = transform.position + transform.forward * 2.0f;
+            Vector3 spawnPosition = transform.position + transform.forward * 6.0f;
 
-            // Instancier la grenade et réduire le nombre de grenades disponibles
+            // Créer la grenade et diminuer son nombre
             FragGrenade grenadeInstance = Instantiate(grenadePrefab, spawnPosition, Quaternion.identity);
             currentGrenadeCount--;
 
-            // Assurer que la grenade est répliquée sur le réseau
+            // Répliquer la grenade
             ServerManager.Spawn(grenadeInstance.gameObject);
         }
+    }
+
+    [Client]
+    public void RechargeGrenades(int amount)
+    {
+        currentGrenadeCount = Mathf.Min(currentGrenadeCount + amount, maxGrenadeCount);
+        // Debug.Log("Grenades rechargées. Nombre actuel de grenades : " + currentGrenadeCount);
     }
 }
