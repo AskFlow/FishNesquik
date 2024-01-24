@@ -16,12 +16,14 @@ public class EnemyBoss : NetworkBehaviour
     public AudioClip deathSound;
     private AudioSource audioSource;
     private Transform nearestPlayer;
-    private bool isPerformingAttack = false;
-    private float minDistance = 5f;
+    private float minDistance = 3f;
     public bool mustRotatesWheels;
 
+    private float timeSinceNotMoving = 0f;
+    private bool isPerformingAttack = false;
+    private bool isPerformingMelee = false;
     private bool isPerformingCharge = false;
-    private List<GameObject> playersHitByCharge = new List<GameObject>();
+    private List<GameObject> playersHitByCollider = new List<GameObject>();
 
 
     public GameObject leftWheel;
@@ -33,6 +35,7 @@ public class EnemyBoss : NetworkBehaviour
     public int bulletAttackCount = 5;
     public float bulletAttackSpeed = 10f;
     public int chargeAttackDamage = 30;
+    public int meleeAttackDamage = 30;
     public float jumpAttackRadius = 5f;
     public float jumpAttackDamage = 20f;
 
@@ -119,11 +122,11 @@ public class EnemyBoss : NetworkBehaviour
     {
         if (nearestPlayer != null)
         {
-            // Direction to the player
+            // Direction toward the player
             Vector3 directionToPlayer = nearestPlayer.position - transform.position;
             directionToPlayer.y = 0f;
 
-            // should continue to chase?
+            // should continu to follow?
             if (directionToPlayer.magnitude > minDistance)
             {
                 // Rotation to look at the player
@@ -137,11 +140,21 @@ public class EnemyBoss : NetworkBehaviour
                 transform.Translate(directionToPlayer.normalized * speed * Time.deltaTime, Space.World);
 
                 mustRotatesWheels = true;
+
+                timeSinceNotMoving = 0f;
             }
             else
             {
-                // special attack?
-                Debug.Log("Boss stopped chasing player.");
+                // boss stop move toward the player
+                timeSinceNotMoving += Time.deltaTime;
+
+                // special attack after 3scd
+                if (timeSinceNotMoving >= 3f && !isPerformingAttack)
+                {
+                    StartCoroutine(MeleeAttack());
+                    isPerformingAttack = true;
+                    timeSinceNotMoving = 0f;
+                }
             }
         }
     }
@@ -160,13 +173,16 @@ public class EnemyBoss : NetworkBehaviour
         isPerformingAttack = true;
         Debug.Log("Start Attack");
 
+        // Not for now - random between each attacks
+        /*
         if(attackType != 0 && attackType != 1 && attackType != 2)
         {
             // Randomly choose the next attack type
             attackType = UnityEngine.Random.Range(0, 3);
             Debug.Log("Attack chosen : " + attackType);
         }
-        
+
+
         // Perform the chosen attack
         switch (attackType)
         {
@@ -178,20 +194,17 @@ public class EnemyBoss : NetworkBehaviour
                 Debug.Log("Charge Attack");
                 StartCoroutine(ChargeAttack());
                 break;
-            case 2:
-                Debug.Log("Jumping Attack");
-                StartCoroutine(JumpAttack());
-                break;
         }
+        */
+
+        StartCoroutine(ChargeAttack());
+
     }
 
     private void DealPlayerDamage(GameObject player, int damage)
     {
-        // Vérifie si le joueur a le composant PlayerHealth
         if (player.TryGetComponent<PlayerHealth>(out PlayerHealth playerHealth))
         {
-            Debug.Log("update health ! ");
-            // Inflige des dégâts au joueur
             UpdateHealthOnServer(playerHealth, -damage);
         }
     }
@@ -239,7 +252,7 @@ public class EnemyBoss : NetworkBehaviour
         yield return new WaitForSeconds(2f);
 
         isPerformingCharge = true;
-        playersHitByCharge.Clear();
+        playersHitByCollider.Clear();
         Debug.Log("CHAAARGE");
 
         // Charge towards the target player's position
@@ -267,31 +280,56 @@ public class EnemyBoss : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Player? ");
-        if (isPerformingCharge && other.CompareTag("Player") && !playersHitByCharge.Contains(other.gameObject))
+        if (isPerformingCharge && other.CompareTag("Player") && !playersHitByCollider.Contains(other.gameObject))
         {
-            Debug.Log("Hit player! ");
-            // If the boss is charging and the player has not been hit yet
-            // Add the player to the list of hit players
-            playersHitByCharge.Add(other.gameObject);
-
-            // Inflict damage to the player
+            playersHitByCollider.Add(other.gameObject);
             DealPlayerDamage(other.gameObject, chargeAttackDamage);
+        }
+
+        if (isPerformingMelee && other.CompareTag("Player") && !playersHitByCollider.Contains(other.gameObject))
+        {
+            playersHitByCollider.Add(other.gameObject);
+            DealPlayerDamage(other.gameObject, meleeAttackDamage);
         }
     }
 
 
-
-    private IEnumerator JumpAttack()
+    private IEnumerator MeleeAttack()
     {
-        // Jump in the air and create a shockwave upon landing
-        // You need to implement the logic for jumping and creating a shockwave
-        yield return new WaitForSeconds(3f); // Adjust jump duration
+        Debug.Log("MELEEEEEE");
+        // Set the trigger for the melee attack animation
+        isPerformingAttack = true;
+        isPerformingMelee = true;
+
+        yield return new WaitForSeconds(1f);
+
+        playersHitByCollider.Clear();
+
+        // Rotate the boss during the melee attack
+        Quaternion startRotation = transform.rotation;
+        float rotationSpeed = 1200f; // Vitesse de rotation ajustée pour effectuer 3 tours en 1 seconde
+
+        float elapsedTime = 0f;
+        float rotationDuration = 1f; // Durée totale pour effectuer 3 tours
+
+        while (elapsedTime < rotationDuration)
+        {
+            // Appliquer la rotation autour de l'axe Y
+            transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime);
+
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        // Réinitialiser la rotation à la fin de l'attaque
+        transform.rotation = startRotation;
 
         // Continue with the next attack
         isPerformingAttack = false;
+        isPerformingMelee = false;
         StartCoroutine(PerformRandomAttack(-1));
     }
+
 
 
     // ------------------------------------------------------------------------------------------
