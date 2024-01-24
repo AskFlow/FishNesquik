@@ -677,8 +677,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.3558168, y: 2.4068768, z: 1.2418829}
-  m_Center: {x: 0.019882679, y: 1.8740152, z: -0.004114926}
+  m_Size: {x: 1.3675226, y: 2.95, z: 2.0185456}
+  m_Center: {x: 0, y: 1.8740152, z: 0}
 --- !u!95 &95511139021925374
 Animator:
   serializedVersion: 4
@@ -733,11 +733,11 @@ MonoBehaviour:
   shootingDistance: 10
   speed: 5
   rotationSpeed: 5
+  movementSound: {fileID: 8300000, guid: be7bcab1bdc983a40af44fa2330c00dc, type: 3}
+  deathSound: {fileID: 8300000, guid: 623b7f0c57d1aa74e93ace127321a847, type: 3}
   pitchDistortionMovementSpeed:
     Min: 0
     Max: 0
-  movementSound: {fileID: 8300000, guid: be7bcab1bdc983a40af44fa2330c00dc, type: 3}
-  deathSound: {fileID: 8300000, guid: 623b7f0c57d1aa74e93ace127321a847, type: 3}
 --- !u!114 &8075528519803460479
 MonoBehaviour:
   m_ObjectHideFlags: 0

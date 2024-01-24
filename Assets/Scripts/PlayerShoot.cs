@@ -1,10 +1,12 @@
 using FishNet.Connection;
+using FishNet.Managing.Server;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using UnityEngine;
 
 public class PlayerShoot : NetworkBehaviour
 {
+    [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private bool isServerAuth;
     [SerializeField] private int damage = 10;
     [SerializeField] private ParticleSystem hitParticle;
@@ -13,7 +15,7 @@ public class PlayerShoot : NetworkBehaviour
     public Camera playerCamera;
 
     [Header("Shoot style")]
-    private bool isRaycast = true;
+    private bool isRaycast = false;
 
     [Header("Grenades")]
     public FragGrenade grenadePrefab;
@@ -39,20 +41,37 @@ public class PlayerShoot : NetworkBehaviour
 
     }
 
+    public int getDamage()
+    {
+        return damage;
+    }
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            if (isServerAuth)
-                ServerShoot(playerCamera.transform.position, Camera.main.transform.forward);
-            else {
-                if (playerCamera == null) 
-                { 
-                    playerCamera = gameObject.GetComponent<Camera>();
+            if (!isRaycast)
+                ShootPhysic();
+            else
+            {
+                if (isServerAuth)
+                {
+
+                    ServerShoot(playerCamera.transform.position, Camera.main.transform.forward);
                 }
-                LocalShoot();
+                else
+                {
+                    if (playerCamera == null)
+                    {
+                        playerCamera = gameObject.GetComponent<Camera>();
+                    }
+                    LocalShoot();
+                }
             }
+
+            
         }
+
         // throw grenade
         if (Input.GetKeyDown(KeyCode.G) && currentGrenadeCount > 0)
         {
@@ -103,6 +122,25 @@ public class PlayerShoot : NetworkBehaviour
 
         }
     }
+
+    [ServerRpc(RequireOwnership = false)]
+    void ShootPhysic()
+    {
+        if (projectilePrefab != null)
+        {
+            // use camera rotation to have the direction
+            Vector3 shootDirection = playerCamera.transform.forward;
+            Vector3 spawnPosition = playerCamera.transform.position + shootDirection * 3;
+
+            Quaternion spawnRotation = Quaternion.LookRotation(shootDirection);
+
+            GameObject projectileInstance = Instantiate(projectilePrefab, spawnPosition, spawnRotation);
+            ServerManager.Spawn(projectileInstance.gameObject);
+        }
+    }
+
+
+
 
     [ServerRpc(RequireOwnership = false)]
     void ThrowGrenadeServerRpc()

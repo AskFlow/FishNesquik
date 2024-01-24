@@ -213,7 +213,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 18
+  <PrefabId>k__BackingField: 20
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
@@ -310,12 +310,13 @@ MonoBehaviour:
   _componentIndexCache: 3
   _addedNetworkObject: {fileID: 4015961740104956465}
   _networkObjectCache: {fileID: 4015961740104956465}
+  projectilePrefab: {fileID: 5897218871136879848, guid: f6df213ad2044284180f073749f38a1a, type: 3}
   isServerAuth: 0
   damage: 10
   hitParticle: {fileID: 19886758, guid: 8c27aeead6d968e4ba986702d6b84335, type: 3}
   tagToHit: Enemy
   playerCamera: {fileID: 566374934778758699}
-  grenadePrefab: {fileID: 0}
+  grenadePrefab: {fileID: 2059012256463750011, guid: 0e76a45f36281734cb515935b09ef451, type: 3}
   maxGrenadeCount: 3
 --- !u!1 &6999696617085792780
 GameObject:
