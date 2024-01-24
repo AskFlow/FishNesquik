@@ -18,10 +18,12 @@ public class EnemyHealth : NetworkBehaviour
     {
         if (health <= 0)
         {
-            // TODO : Handle Death
             StartCoroutine(DeathCoroutine());
         }
     }
+
+
+  
 
     public IEnumerator DeathCoroutine()
     {
@@ -47,7 +49,14 @@ public class EnemyHealth : NetworkBehaviour
         }
         yield return new WaitForSeconds(timeBeforeDestroy);
 
-        Destroy(gameObject);
+        if (IsServer)
+        {
+            if (gameObject != null && gameObject.activeSelf)
+            {
+                gameObject.SetActive(false);
+                ServerManager.Despawn(gameObject);
+            }
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
