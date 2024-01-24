@@ -49,6 +49,12 @@ public class EnemySpawnZone : NetworkBehaviour
         SetSpawnedObject(spawnedEnemy, script);
     }
 
+    [ObserversRpc]
+    public void SetSpawnedObject(GameObject spawnedEnemy, EnemySpawnZone script)
+    {
+        script.spawnedObject = spawnedEnemy;
+    }
+
     [ServerRpc(RequireOwnership = false)] // on the serv
     private void HideObjectOnServer()
     {
@@ -64,11 +70,5 @@ public class EnemySpawnZone : NetworkBehaviour
         {
             robotToHide.SetActive(false);
         }
-    }
-
-    [ObserversRpc]
-    public void SetSpawnedObject(GameObject spawnedEnemy, EnemySpawnZone script)
-    {
-        script.spawnedObject = spawnedEnemy;
     }
 }

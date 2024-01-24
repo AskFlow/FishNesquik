@@ -8,20 +8,26 @@ using FishNet;
 
 public class EnemyKamikaze : NetworkBehaviour
 {
+    [Header("Enemy Behavior")]
     public float activationDistance = 2f;
-    public float explosionRadius = 5f;
     public float speed = 4f;
     public float rotationSpeed = 5f;
-    public int explosionDamage = 20;
-    public MinMaxFloat pitchDistortionMovementSpeed;
 
+    [Header("Player Detection")]
     private bool hasExploded = false;
-    public Transform nearestPlayer = null;
+    private Transform nearestPlayer = null;
 
+    [Header("Audio Settings")]
     public AudioClip movementSound;
     public AudioClip explosionSound;
-    public GameObject explosionEffectPrefab;
     private AudioSource audioSource;
+    public MinMaxFloat pitchDistortionMovementSpeed;
+
+    [Header("Explosion Settings")]
+    public float explosionRadius = 5f;
+    public int explosionDamage = 20;
+    public GameObject explosionEffectPrefab;
+
 
     [System.Serializable]
     public struct MinMaxFloat
@@ -105,7 +111,6 @@ public class EnemyKamikaze : NetworkBehaviour
 
         if (distanceToPlayer < activationDistance && hasExploded == false)
         {
-            Debug.Log("close to the player");
             hasExploded = true;
             Suicide();
         }
@@ -119,11 +124,8 @@ public class EnemyKamikaze : NetworkBehaviour
         {
             if (targetsCollider.CompareTag("Player"))
             {
-                Debug.Log("Player detected at position: " + targetsCollider.transform.position);
-
                 if (targetsCollider.TryGetComponent<PlayerHealth>(out PlayerHealth playerHealth))
                 {
-                    Debug.Log("Player health update!");
                     UpdateHealthOnServer(playerHealth, -explosionDamage);
                 }
             }
@@ -131,7 +133,6 @@ public class EnemyKamikaze : NetworkBehaviour
             {
                 if (targetsCollider.TryGetComponent<EnemyHealth>(out EnemyHealth enemyHealth))
                 {
-                    Debug.Log("Enemy health update!");
                     UpdateHealthOnEnemy(enemyHealth, -explosionDamage);
                 }
             }
@@ -154,7 +155,12 @@ public class EnemyKamikaze : NetworkBehaviour
     public IEnumerator DelayedDespawn()
     {
         yield return new WaitForSeconds(0.1f);
-        ServerManager.Despawn(gameObject);
+
+        if (gameObject != null && gameObject.activeSelf)
+        {
+            gameObject.SetActive(false);
+            ServerManager.Despawn(gameObject);
+        }
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -162,7 +168,6 @@ public class EnemyKamikaze : NetworkBehaviour
     {
         if (IsServer)
         {
-            Debug.Log("set Life");
             playerHealth.UpdateHealth(playerHealth, amountToChange);
         }
     }
@@ -172,7 +177,6 @@ public class EnemyKamikaze : NetworkBehaviour
     {
         if (IsServer)
         {
-            Debug.Log("Setting Life");
             enemyHealth.UpdateHealth(amountToChange);
         }
     }

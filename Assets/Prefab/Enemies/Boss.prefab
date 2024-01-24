@@ -202,7 +202,7 @@ MonoBehaviour:
   _componentIndexCache: 0
   _addedNetworkObject: {fileID: -172404313617634027}
   _networkObjectCache: {fileID: -172404313617634027}
-  health: 1000
+  health: 3000
 --- !u!114 &-4710461495712847420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,13 +218,13 @@ MonoBehaviour:
   _componentIndexCache: 1
   _addedNetworkObject: {fileID: -172404313617634027}
   _networkObjectCache: {fileID: -172404313617634027}
-  speed: 5
+  speed: 3
   rotationSpeed: 5
   wheelRotationSpeed: 50
   pitchDistortionMovementSpeed:
-    Min: 0
-    Max: 0
-  movementSound: {fileID: 0}
+    Min: 0.8
+    Max: 1.2
+  movementSound: {fileID: 8300000, guid: be7bcab1bdc983a40af44fa2330c00dc, type: 3}
   deathSound: {fileID: 8300000, guid: 623b7f0c57d1aa74e93ace127321a847, type: 3}
   mustRotatesWheels: 0
   leftWheel: {fileID: 1855245367226062}

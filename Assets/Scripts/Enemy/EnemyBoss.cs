@@ -10,34 +10,48 @@ public class EnemyBoss : NetworkBehaviour
 {
     public float speed = 2f;
     public float rotationSpeed = 5f;
-    public float wheelRotationSpeed = 100f;
+
+    [Header("Audio Settings")]
     public MinMaxFloat pitchDistortionMovementSpeed;
     public AudioClip movementSound;
     public AudioClip deathSound;
     private AudioSource audioSource;
+
+    [Header("Player Detection")]
     private Transform nearestPlayer;
     private float minDistance = 3f;
-    public bool mustRotatesWheels;
 
+    [Header("Wheels")]
+    public float wheelRotationSpeed = 100f;
+    public GameObject leftWheel;
+    public GameObject rightWheel;
+    private bool mustRotatesWheels;
+
+    [Header("Attack Settings")]
     private float timeSinceNotMoving = 0f;
     private bool isPerformingAttack = false;
     private bool isPerformingMelee = false;
     private bool isPerformingCharge = false;
     private List<GameObject> playersHitByCollider = new List<GameObject>();
 
-
-    public GameObject leftWheel;
-    public GameObject rightWheel;
-
+    [Header("Attack Timings")]
     public float minTimeBetweenAttacks = 1f;
     public float maxTimeBetweenAttacks = 5f;
 
+    [Header("Bullet Attack")]
     public int bulletAttackCount = 5;
     public float bulletAttackSpeed = 10f;
+
+    [Header("Charge Attack")]
     public int chargeAttackDamage = 30;
+
+    [Header("Melee Attack")]
     public int meleeAttackDamage = 30;
+
+    [Header("Jump Attack")]
     public float jumpAttackRadius = 5f;
     public float jumpAttackDamage = 20f;
+
 
     [System.Serializable]
     public struct MinMaxFloat
@@ -58,7 +72,6 @@ public class EnemyBoss : NetworkBehaviour
         audioSource.loop = true;
 
         // Start the first attack
-        Debug.Log("start");
         StartCoroutine(PerformRandomAttack(-1));
     }
 
@@ -171,7 +184,6 @@ public class EnemyBoss : NetworkBehaviour
 
         mustRotatesWheels = false;
         isPerformingAttack = true;
-        Debug.Log("Start Attack");
 
         // Not for now - random between each attacks
         /*
@@ -214,7 +226,6 @@ public class EnemyBoss : NetworkBehaviour
     {
         if (IsServer)
         {
-            Debug.Log("set Life");
             playerHealth.UpdateHealth(playerHealth, amountToChange);
         }
     }
@@ -253,7 +264,6 @@ public class EnemyBoss : NetworkBehaviour
 
         isPerformingCharge = true;
         playersHitByCollider.Clear();
-        Debug.Log("CHAAARGE");
 
         // Charge towards the target player's position
         float chargeSpeed = 15f;
@@ -296,7 +306,6 @@ public class EnemyBoss : NetworkBehaviour
 
     private IEnumerator MeleeAttack()
     {
-        Debug.Log("MELEEEEEE");
         // Set the trigger for the melee attack animation
         isPerformingAttack = true;
         isPerformingMelee = true;
@@ -335,10 +344,15 @@ public class EnemyBoss : NetworkBehaviour
     // ------------------------------------------------------------------------------------------
     // Utils
     // ------------------------------------------------------------------------------------------
-    private IEnumerator DelayedDespawn()
+    public IEnumerator DelayedDespawn()
     {
         yield return new WaitForSeconds(0.1f);
-        ServerManager.Despawn(gameObject);
+
+        if (gameObject != null && gameObject.activeSelf)
+        {
+            gameObject.SetActive(false);
+            ServerManager.Despawn(gameObject);
+        }
     }
 
 

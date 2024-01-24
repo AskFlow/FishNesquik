@@ -28,7 +28,6 @@ public class EnemyHealthUI : NetworkBehaviour
     {
         if (IsClient && enemyHealth != null && healthSlider != null)
         {
-            Debug.Log("Update life");
             // Mettez à jour la barre de santé côté client
             healthSlider.value = enemyHealth.health;
         }

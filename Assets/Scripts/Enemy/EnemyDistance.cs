@@ -6,16 +6,20 @@ using UnityEngine.AI;
 
 public class EnemyDistance : NetworkBehaviour
 {
+    [Header("Enemy Behavior")]
     public float shootingDistance = 10f;
     public float speed = 5f;
     public float rotationSpeed = 5f;
-    public MinMaxFloat pitchDistortionMovementSpeed;
 
+    [Header("Enemy Detection")]
     private Transform nearestPlayer = null;
 
+    [Header("Audio Settings")]
     public AudioClip movementSound;
     public AudioClip deathSound;
     private AudioSource audioSource;
+    public MinMaxFloat pitchDistortionMovementSpeed;
+
 
     [System.Serializable]
     public struct MinMaxFloat
@@ -102,7 +106,6 @@ public class EnemyDistance : NetworkBehaviour
 
         if (distanceToPlayer < shootingDistance)
         {
-            Debug.Log("close to the player");
             ShootPlayer(playerToAim);
             return true;
         }
@@ -116,9 +119,14 @@ public class EnemyDistance : NetworkBehaviour
         // TODO : shoot to the player, serv side
     }
 
-    private IEnumerator DelayedDespawn()
+    public IEnumerator DelayedDespawn()
     {
         yield return new WaitForSeconds(0.1f);
-        ServerManager.Despawn(gameObject);
+
+        if (gameObject != null && gameObject.activeSelf)
+        {
+            gameObject.SetActive(false);
+            ServerManager.Despawn(gameObject);
+        }
     }
 }

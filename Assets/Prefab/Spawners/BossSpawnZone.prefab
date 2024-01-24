@@ -47,7 +47,7 @@ GameObject:
   - component: {fileID: 1314781090412268597}
   - component: {fileID: 1314781090412268596}
   m_Layer: 0
-  m_Name: KamikazeSpawnZone 1
+  m_Name: BossSpawnZone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -144,7 +144,7 @@ MonoBehaviour:
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
-  <AssetPathHash>k__BackingField: 11962567908590556568
+  <AssetPathHash>k__BackingField: 15058329545971926076
 --- !u!1 &5586902749810767445
 GameObject:
   m_ObjectHideFlags: 0

@@ -26,6 +26,13 @@ public class PlayerController : NetworkBehaviour
     private float cameraYOffset = 0.4f;
     private Camera playerCamera;
 
+    [Header ("Grenades")]
+    public int maxGrenadeCount = 3;
+    private int currentGrenadeCount;
+
+    public FragGrenade grenadePrefab;  // Référence au script de la grenade
+
+
 
     public override void OnStartClient()
     {
@@ -49,6 +56,9 @@ public class PlayerController : NetworkBehaviour
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        
+        // Initialise nb of grenades
+        currentGrenadeCount = maxGrenadeCount;
     }
 
     void Update()
@@ -91,6 +101,31 @@ public class PlayerController : NetworkBehaviour
             rotationX = Mathf.Clamp(rotationX, -lookXLimit, lookXLimit);
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0, 0);
             transform.rotation *= Quaternion.Euler(0, Input.GetAxis("Mouse X") * lookSpeed, 0);
+        }
+
+        // throw grenade
+        if (Input.GetKeyDown(KeyCode.G) && currentGrenadeCount > 0)
+        {
+            // Appeler la fonction sur le serveur
+            ThrowGrenadeServerRpc();
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    void ThrowGrenadeServerRpc()
+    {
+        // Instancier la grenade à la position du joueur avec une direction appropriée
+        if (grenadePrefab != null)
+        {
+            // Instancier la grenade à une position devant le joueur (ajuste la position selon tes besoins)
+            Vector3 spawnPosition = transform.position + transform.forward * 2.0f;
+
+            // Instancier la grenade et réduire le nombre de grenades disponibles
+            FragGrenade grenadeInstance = Instantiate(grenadePrefab, spawnPosition, Quaternion.identity);
+            currentGrenadeCount--;
+
+            // Assurer que la grenade est répliquée sur le réseau
+            ServerManager.Spawn(grenadeInstance.gameObject);
         }
     }
 }
