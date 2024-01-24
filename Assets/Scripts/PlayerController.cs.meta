@@ -3,7 +3,10 @@ guid: 6bea93cca97b6a24787b9eb4f9f4fdc8
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - _addedNetworkObject: {instanceID: 0}
+  - _networkObjectCache: {instanceID: 0}
+  - grenadePrefab: {fileID: 2059012256463750011, guid: 0e76a45f36281734cb515935b09ef451, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
