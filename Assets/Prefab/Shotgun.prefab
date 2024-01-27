@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5332929100319815447
+--- !u!1 &2612522127476984513
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,50 +8,50 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5332929100319815446}
-  - component: {fileID: 5332929100319815469}
-  - component: {fileID: 5332929100319815442}
-  - component: {fileID: 5332929100319815443}
-  - component: {fileID: 5332929100319815440}
-  - component: {fileID: 5332929100319815441}
-  - component: {fileID: 2208289811517922688}
+  - component: {fileID: 2612522127476984512}
+  - component: {fileID: 2612522127476984571}
+  - component: {fileID: 2612522127476984516}
+  - component: {fileID: 2612522127476984517}
+  - component: {fileID: 2612522127476984518}
+  - component: {fileID: 2612522127476984519}
+  - component: {fileID: 8135398857180258390}
   m_Layer: 6
-  m_Name: pickableObject
+  m_Name: Shotgun
   m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5332929100319815446
+--- !u!4 &2612522127476984512
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5332929100319815447}
+  m_GameObject: {fileID: 2612522127476984513}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.243597, y: -9.7776375, z: -9.807175}
+  m_LocalPosition: {x: -9.75, y: -9.7776375, z: -9.09}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &5332929100319815469
+--- !u!33 &2612522127476984571
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5332929100319815447}
+  m_GameObject: {fileID: 2612522127476984513}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &5332929100319815442
+--- !u!23 &2612522127476984516
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5332929100319815447}
+  m_GameObject: {fileID: 2612522127476984513}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c72bfe3923175824b8ac39315aafb3b3, type: 2}
+  - {fileID: 2100000, guid: 7f730563dbb40794e914f66f13befea7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -87,26 +87,26 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5332929100319815443
+--- !u!65 &2612522127476984517
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5332929100319815447}
+  m_GameObject: {fileID: 2612522127476984513}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!54 &5332929100319815440
+--- !u!54 &2612522127476984518
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5332929100319815447}
+  m_GameObject: {fileID: 2612522127476984513}
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
@@ -116,13 +116,13 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &5332929100319815441
+--- !u!114 &2612522127476984519
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5332929100319815447}
+  m_GameObject: {fileID: 2612522127476984513}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
@@ -132,11 +132,11 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
-  - {fileID: 2208289811517922688}
+  - {fileID: 8135398857180258390}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
   <ChildNetworkObjects>k__BackingField: []
   SerializedTransformProperties:
-    Position: {x: -6.243597, y: -9.7776375, z: -9.807175}
+    Position: {x: -9.75, y: -9.7776375, z: -9.09}
     Rotation: {x: -0, y: -0, z: -0, w: 1}
     LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   _isNetworked: 1
@@ -144,30 +144,30 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 0
+  <PrefabId>k__BackingField: 30
   <SpawnableCollectionId>k__BackingField: 0
-  _scenePathHash: 0
+  _scenePathHash: 584410112
   <SceneId>k__BackingField: 0
-  <AssetPathHash>k__BackingField: 18165122692714333554
---- !u!114 &2208289811517922688
+  <AssetPathHash>k__BackingField: 13621634288016382282
+--- !u!114 &8135398857180258390
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5332929100319815447}
+  m_GameObject: {fileID: 2612522127476984513}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5c3446478881514499c1735fe7dd6691, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _componentIndexCache: 0
-  _addedNetworkObject: {fileID: 5332929100319815441}
-  _networkObjectCache: {fileID: 5332929100319815441}
-  currentWeapon: 0
+  _addedNetworkObject: {fileID: 2612522127476984519}
+  _networkObjectCache: {fileID: 2612522127476984519}
+  currentWeapon: 2
   playerShoot: {fileID: 0}
-  weaponObject: {fileID: 5332929100319815447}
+  weaponObject: {fileID: 2612522127476984513}
   weaponColors:
-  - {r: 1, g: 0, b: 0, a: 0}
-  projectileType: {fileID: 5897218871136879848, guid: f6df213ad2044284180f073749f38a1a, type: 3}
+  - {r: 0, g: 0, b: 0, a: 0}
+  projectileType: {fileID: 5897218871136879848, guid: 1a1f16c503e5d1244b92301974d3a92a, type: 3}
   isShootingEnabled: 1

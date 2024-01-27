@@ -22,6 +22,8 @@ public class PlayerInteract : NetworkBehaviour
     private Transform pickupPosition;
 
 
+    PlayerController playerController;
+    PlayerWeapon weapon;
     bool hasObjectInHand;
     GameObject objInHand;
     Transform worldObjectHolder;
@@ -37,9 +39,22 @@ public class PlayerInteract : NetworkBehaviour
 
     }
 
+    private void Start()
+    {
+        playerController = GetComponent<PlayerController>();
+    }
+
 
     private void Update()
     {
+        if(objInHand != null)
+        {
+            playerController.canShoot = true;
+        }
+        else
+        {
+            playerController.canShoot = false;
+        }
         if (Input.GetKeyDown(interactButton))
         {
             Interact();
@@ -76,20 +91,32 @@ public class PlayerInteract : NetworkBehaviour
 
     void Pickup(RaycastHit hit)
     {
+        //l'arme que tu viens d'essayer de prendre
+        if (hit.transform.gameObject.CompareTag("Weapon"))
+        {
+            weapon = hit.transform.gameObject.GetComponent<PlayerWeapon>();
+            weapon.playerShoot = GetComponent<PlayerShoot>();
+        }
         if (!hasObjectInHand)
         {
+            weapon.SwitchWeapon();
             SetObjectInHandServer(hit.transform.gameObject, pickupPosition.position, pickupPosition.rotation, gameObject);
             objInHand = hit.transform.gameObject;
             hasObjectInHand = true;
         }
         else if (hasObjectInHand)
         {
+            if (hit.transform.gameObject.CompareTag("Weapon"))
+            {
+                playerController.canShoot = false;
+            }
             Drop();
-
             SetObjectInHandServer(hit.transform.gameObject, pickupPosition.position, pickupPosition.rotation, gameObject);
             objInHand = hit.transform.gameObject;
             hasObjectInHand = true;
+
         }
+
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -116,7 +143,6 @@ public class PlayerInteract : NetworkBehaviour
     {
         if (!hasObjectInHand)
             return;
-
         DropObjectServer(objInHand, worldObjectHolder);
         hasObjectInHand = false;
         objInHand = null;

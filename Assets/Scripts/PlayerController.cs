@@ -25,6 +25,9 @@ public class PlayerController : NetworkBehaviour
     public bool canMove = true;
 
     [SerializeField]
+    public bool canShoot = false;
+
+    [SerializeField]
     private float cameraYOffset = 0.4f;
     public Camera playerCamera;
 
@@ -100,25 +103,11 @@ public class PlayerController : NetworkBehaviour
         }
 
         // shoot
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0) && canShoot)
         {
             playerShoot.TryShoot();
         }
 
-
-        // switch weapon between 1, 2, 3
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            playerWeapon.SwitchWeapon(WeaponType.Classic);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            playerWeapon.SwitchWeapon(WeaponType.Sniper);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            playerWeapon.SwitchWeapon(WeaponType.Pompe);
-        }
 
     }
 }

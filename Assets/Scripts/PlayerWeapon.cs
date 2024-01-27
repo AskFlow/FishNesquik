@@ -11,117 +11,47 @@ public class PlayerWeapon : NetworkBehaviour
     [Header("Situation")]
     public WeaponType currentWeapon;
 
-    public bool sniperUnlocked = false;
-    public bool pompeUnlocked = false;
-    public bool classicUnlocked = true;
 
-    private PlayerShoot playerShoot;
+    public PlayerShoot playerShoot;
 
     [Header("Visuals")]
     public GameObject weaponObject;
-    public List<Color> weaponColors;
 
     [Header("Projectiles")]
-    [SerializeField] private GameObject projectileClassic;
-    [SerializeField] private GameObject projectileSniper;
-    [SerializeField] private GameObject projectilePompe;
+    [SerializeField] private GameObject projectileType;
 
 
-    [SyncVar]
-    private bool isShootingEnabled = false;
 
-    void Start()
-    {
-        playerShoot = GetComponent<PlayerShoot>();
-        SwitchWeapon(WeaponType.Classic);
-    }
 
     // Méthode pour changer d'arme
-    public void SwitchWeapon(WeaponType newWeapon)
+    public void SwitchWeapon()
     {
-        if (CanSwitchToWeapon(newWeapon))
-        {
-            currentWeapon = newWeapon;
-            Debug.Log("Switched to " + currentWeapon.ToString());
-
-            UpdateShootParameters();
-            UpdateWeaponColor();
-            SetShootingEnabled(true);
-        }
-        else
-        {
-            Debug.Log("Cannot switch to " + newWeapon.ToString() + ". Weapon is locked.");
-        }
+        UpdateShootParameters();
     }
 
     // Méthode pour mettre à jour les paramètres de tir en fonction de l'arme actuelle
     private void UpdateShootParameters()
     {
+
         switch (currentWeapon)
         {
             case WeaponType.Classic:
-                SetShootParameters(false, 1f, 0.3f, 1, projectileClassic);
-                Debug.Log("PARAMETER SET");
+                SetShootParameters(false, 1f, 0.3f, 1, projectileType);
                 break;
             case WeaponType.Sniper:
-                SetShootParameters(true, 0f, 0f, 0, projectileSniper);
+                SetShootParameters(true, 0f, 0f, 0, projectileType);
                 break;
             case WeaponType.Pompe:
-                SetShootParameters(false, 8f, 1f, 5, projectilePompe);
+                SetShootParameters(false, 8f, 1f, 5, projectileType);
                 break;
             default:
                 break;
         }
     }
 
-    private void UpdateWeaponColor()
+    public WeaponType getWeaponClass()
     {
-        if (weaponObject != null && weaponColors.Count > 0 && (int)currentWeapon < weaponColors.Count)
-        {
-            Renderer weaponRenderer = weaponObject.GetComponent<Renderer>();
-            if (weaponRenderer != null)
-            {
-                weaponRenderer.material.color = weaponColors[(int)currentWeapon];
-            }
-        }
-    }
-
-    public bool IsWeaponUnlocked(WeaponType weapon)
-    {
-        switch (weapon)
-        {
-            case WeaponType.Sniper:
-                return sniperUnlocked;
-            case WeaponType.Pompe:
-                return pompeUnlocked;
-            case WeaponType.Classic:
-                return classicUnlocked;
-            default:
-                return false;
-        }
-    }
-
-    public void UnlockWeapon(WeaponType weapon)
-    {
-        switch (weapon)
-        {
-            case WeaponType.Sniper:
-                sniperUnlocked = true;
-                break;
-            case WeaponType.Pompe:
-                pompeUnlocked = true;
-                break;
-            case WeaponType.Classic:
-                classicUnlocked = true;
-                break;
-            default:
-                break;
-        }
-    }
-
-    private bool CanSwitchToWeapon(WeaponType weapon)
-    {
-        return IsWeaponUnlocked(weapon);
+        return currentWeapon;
     }
 
     private void SetShootParameters(bool raycast, float sprayAngle, float timeBetweenShots, int numberOfBullets, GameObject projectile)
@@ -133,9 +63,5 @@ public class PlayerWeapon : NetworkBehaviour
         playerShoot.SetProjectilePrefab(projectile);
     }
 
-    [ServerRpc]
-    private void SetShootingEnabled(bool enabled)
-    {
-        isShootingEnabled = enabled;
-    }
+
 }
