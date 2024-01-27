@@ -7,8 +7,6 @@ public class Chest : NetworkBehaviour
 {
     [SerializeField]
     private GameObject objectToLootPrefab;
-    [SerializeField]
-    private KeyCode interactButton = KeyCode.E;
 
     
     private GameObject spawnedObject;
@@ -16,11 +14,6 @@ public class Chest : NetworkBehaviour
 
 
     private bool isOpenable;
-
-    private bool isNearChest;
-
-    private int ownerPlayerId;
-
 
 
     public void Start()
@@ -31,19 +24,14 @@ public class Chest : NetworkBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(interactButton))
-        {
-            LootObject();
-        }
-    }
 
     public void LootObject() {
-        if (isOpenable && IsOwner && isNearChest)
+        if (isOpenable)
         {
+
             SpawnedObject(objectToLootPrefab, this);
             isOpenable = false;
+
         }
     }
 
@@ -51,7 +39,6 @@ public class Chest : NetworkBehaviour
     void SpawnedObject(GameObject obj, Chest script)
     {
         GameObject spawned = Instantiate(obj, gameObject.transform.position + addspawn, Quaternion.identity);
-        //GameObject spawned = Instantiate(obj, position);
 
 
         ServerManager.Spawn(spawned);
@@ -62,24 +49,6 @@ public class Chest : NetworkBehaviour
     void SetSpawnedObject(GameObject spawned, Chest script)
     {
         script.spawnedObject = spawned;
-        script.ownerPlayerId = OwnerId;
     }
 
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if(other.CompareTag("Player"))
-        {
-            isNearChest = IsOwner && other.GetComponent<NetworkObject>().OwnerId == ownerPlayerId;
-
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            isNearChest = false;
-        }
-    }
 }

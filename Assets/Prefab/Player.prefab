@@ -115,6 +115,7 @@ GameObject:
   - component: {fileID: 5555220849099876605}
   - component: {fileID: 2427995578035809124}
   - component: {fileID: 7308552698191060084}
+  - component: {fileID: 1061445767654218364}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -228,6 +229,7 @@ MonoBehaviour:
   - {fileID: 8695101098142122883}
   - {fileID: 2427995578035809124}
   - {fileID: 7308552698191060084}
+  - {fileID: 1061445767654218364}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
   <ChildNetworkObjects>k__BackingField: []
   SerializedTransformProperties:
@@ -343,6 +345,27 @@ MonoBehaviour:
   playerCamera: {fileID: 566374934778758699}
   grenadePrefab: {fileID: 0}
   maxGrenadeCount: 3
+--- !u!114 &1061445767654218364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4015961740104956464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82967578b62769b4e9a28ed6967b8719, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 5
+  _addedNetworkObject: {fileID: 4015961740104956465}
+  _networkObjectCache: {fileID: 4015961740104956465}
+  interactButton: 101
+  interactLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  cam: {fileID: 566374934778758699}
+  raycastDistance: 10
 --- !u!1 &6999696617085792780
 GameObject:
   m_ObjectHideFlags: 0

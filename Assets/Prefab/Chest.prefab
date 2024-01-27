@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1022616777429503404}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Drop Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 1022616778303085557}
   - component: {fileID: 1022616778303085556}
   - component: {fileID: 4969590043268019824}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Chest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -147,8 +147,6 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 4969590043268019824}
   _networkObjectCache: {fileID: 4969590043268019824}
   objectToLootPrefab: {fileID: 0}
-  dropHandler: {fileID: 1022616777429503407}
-  interactButton: 101
 --- !u!114 &4969590043268019824
 MonoBehaviour:
   m_ObjectHideFlags: 0
