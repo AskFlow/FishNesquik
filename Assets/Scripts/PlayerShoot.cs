@@ -2,32 +2,54 @@ using FishNet.Connection;
 using FishNet.Managing.Server;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
+using System.Collections;
 using UnityEngine;
 
 public class PlayerShoot : NetworkBehaviour
 {
-    [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private bool isServerAuth;
     [SerializeField] private int damage = 10;
     [SerializeField] private ParticleSystem hitParticle;
     [SerializeField] private string tagToHit;
 
+    private GameObject projectilePrefab;
+    private bool timeCanShoot = true;
+    private float lastShootTime;
+
     public Camera playerCamera;
 
-    [Header("Shoot style")]
-    private bool isRaycast = false;
 
-    [Header("Grenades")]
-    public FragGrenade grenadePrefab;
-    public int maxGrenadeCount = 3;
-    private int currentGrenadeCount;
-
+    [Header("Weapon parameters")]
+    private bool isRaycast;
+    [Range(0f, 10f)] private float sprayAngle;
+    [Range(0f, 2f)] private float timeBetweenShots;
+    [Range(1, 10)] private int numberOfBullets;
 
 
-    private void Start()
+    // Setters for weapon parameters
+    public void SetIsRaycast(bool value)
     {
-        // Initialise nb of grenades
-        currentGrenadeCount = maxGrenadeCount;
+        isRaycast = value;
+    }
+
+    public void SetSprayAngle(float value)
+    {
+        sprayAngle = value;
+    }
+
+    public void SetTimeBetweenShots(float value)
+    {
+        timeBetweenShots = value;
+    }
+
+    public void SetNumberOfBullets(int value)
+    {
+        numberOfBullets = value;
+    }
+
+    public void SetProjectilePrefab(GameObject prefab)
+    {
+        projectilePrefab = prefab;
     }
 
     public override void OnStartClient()
@@ -46,42 +68,36 @@ public class PlayerShoot : NetworkBehaviour
         return damage;
     }
 
-    private void Update()
+    void Start()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        lastShootTime = Time.time;
+    }
+
+    public void TryShoot()
+    {
+        float timeSinceLastShoot = Time.time - lastShootTime;
+        if (timeSinceLastShoot >= timeBetweenShots)
         {
-            if (!isRaycast)
-                ShootPhysic();
-            else
+            lastShootTime = Time.time;
+            if (!isRaycast && timeCanShoot)
+                ShootPhysic(sprayAngle, timeBetweenShots, numberOfBullets);
+            else if (isRaycast && timeCanShoot)
             {
                 if (isServerAuth)
                 {
-
-                    ServerShoot(playerCamera.transform.position, Camera.main.transform.forward);
+                    ServerShootRaycast(playerCamera.transform.position, Camera.main.transform.forward);
                 }
                 else
                 {
-                    if (playerCamera == null)
-                    {
-                        playerCamera = gameObject.GetComponent<Camera>();
-                    }
-                    LocalShoot();
+                    LocalShootRaycast();
                 }
             }
-
-            
-        }
-
-        // throw grenade
-        if (Input.GetKeyDown(KeyCode.G) && currentGrenadeCount > 0)
-        {
-            Debug.Log("G");
-            ThrowGrenadeServerRpc();
         }
     }
 
+
     [ServerRpc]
-    void ServerShoot(Vector3 camPosition, Vector3 shootForward, NetworkConnection sender = null)
+    void ServerShootRaycast(Vector3 camPosition, Vector3 shootForward, NetworkConnection sender = null)
     {
         // Last part is to have the shot be in front of our own player and not inside of him
         Vector3 shotPosition = camPosition + shootForward * 0.5f;
@@ -103,7 +119,7 @@ public class PlayerShoot : NetworkBehaviour
         Instantiate(hitParticle, hitPoint, Quaternion.identity);
     }
 
-    void LocalShoot()
+    void LocalShootRaycast()
     {
         // Last part is to have the shot be in front of our own player and not inside of him
         Vector3 shotPosition = playerCamera.transform.position + playerCamera.transform.forward * 0.5f;
@@ -124,49 +140,39 @@ public class PlayerShoot : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    void ShootPhysic()
+    void ShootPhysic(float sprayAngle, float timeBetweenShots, int numberOfBullets)
     {
-        if (projectilePrefab != null)
+        StartCoroutine(ShootCoroutine(sprayAngle, timeBetweenShots, numberOfBullets));
+    }
+
+    IEnumerator ShootCoroutine(float sprayAngle, float timeBetweenShots, int numberOfBullets)
+    {
+        timeCanShoot = false;
+
+        for (int i = 0; i < numberOfBullets; i++)
         {
-            // use camera rotation to have the direction
+            // Utilise la rotation de la caméra pour obtenir la direction du tir
             Vector3 shootDirection = playerCamera.transform.forward;
-            Vector3 spawnPosition = playerCamera.transform.position + shootDirection * 3;
 
-            Quaternion spawnRotation = Quaternion.LookRotation(shootDirection);
+            // Applique un angle de dispersion aléatoire
+            Quaternion randomRotation = Quaternion.Euler(Random.Range(-sprayAngle, sprayAngle), Random.Range(-sprayAngle, sprayAngle), 0f);
+            Vector3 finalDirection = randomRotation * shootDirection;
 
+            // Détermine la position de spawn
+            Vector3 spawnPosition = playerCamera.transform.position + finalDirection * 3;
+
+            // Détermine la rotation de spawn
+            Quaternion spawnRotation = Quaternion.LookRotation(finalDirection);
+
+            // Instancie le projectile
             GameObject projectileInstance = Instantiate(projectilePrefab, spawnPosition, spawnRotation);
             ServerManager.Spawn(projectileInstance.gameObject);
         }
-    }
 
+        // Attend le délai entre chaque tir
+        yield return new WaitForSeconds(timeBetweenShots);
 
-
-
-    [ServerRpc(RequireOwnership = false)]
-    void ThrowGrenadeServerRpc()
-    {
-        Debug.Log("Throw grenade");
-        // Server side
-        if (currentGrenadeCount <= 0)
-            return;
-
-        if (grenadePrefab != null)
-        {
-            Vector3 spawnPosition = transform.position + transform.forward * 6.0f;
-
-            FragGrenade grenadeInstance = Instantiate(grenadePrefab, spawnPosition, Quaternion.identity);
-            currentGrenadeCount--;
-
-            // Replicates grenade
-            ServerManager.Spawn(grenadeInstance.gameObject);
-        }
-    }
-
-    [Client]
-    public void RechargeGrenades(int amount)
-    {
-        currentGrenadeCount = Mathf.Min(currentGrenadeCount + amount, maxGrenadeCount);
-        // Debug.Log("Grenades rechargées. Nombre actuel de grenades : " + currentGrenadeCount);
+        timeCanShoot = true;
     }
 
     [ServerRpc(RequireOwnership = false)]

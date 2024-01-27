@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6587355826196193688}
   - component: {fileID: -6740564257625665317}
   m_Layer: 0
-  m_Name: Projectile
+  m_Name: ProjectilePompe
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -65,7 +65,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 099388919bd2534488e5b253bc7338fd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -144,11 +144,11 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 13
+  <PrefabId>k__BackingField: 18
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
-  <AssetPathHash>k__BackingField: 11141933360816077505
+  <AssetPathHash>k__BackingField: 11505541903889430655
 --- !u!114 &-6740564257625665317
 MonoBehaviour:
   m_ObjectHideFlags: 0

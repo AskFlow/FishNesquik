@@ -23,16 +23,16 @@ public class GrenadeDistributor : NetworkBehaviour
     {
         if (IsServer && other.CompareTag("Player"))
         {
-            PlayerController playerController = other.GetComponent<PlayerController>();
+            PlayerGrenade playerGrenade = other.GetComponent<PlayerGrenade>();
 
-            if (playerController != null)
+            if (playerGrenade != null)
             {
                 if (audioSource != null)
                 {
                     audioSource.Play();
                 }
 
-                RechargeGrenadesClientRpc(playerController, grenadesToGive);
+                RechargeGrenadesClientRpc(playerGrenade, grenadesToGive);
 
                 // delete the object
                 gameObject.SetActive(false);
@@ -42,9 +42,9 @@ public class GrenadeDistributor : NetworkBehaviour
     }
 
     [ObserversRpc]
-    void RechargeGrenadesClientRpc(PlayerController playerController, int amount)
+    void RechargeGrenadesClientRpc(PlayerGrenade playerGrenade, int amount)
     {
         // client side
-        playerController.RechargeGrenades(amount);
+        playerGrenade.RechargeGrenades(amount);
     }
 }

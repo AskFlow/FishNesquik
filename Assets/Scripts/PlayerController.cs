@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using FishNet.Object;
+using static PlayerWeapon;
 
 //This is made by Bobsi Unity - Youtube
 public class PlayerController : NetworkBehaviour
@@ -13,7 +14,10 @@ public class PlayerController : NetworkBehaviour
     public float lookSpeed = 2.0f;
     public float lookXLimit = 45.0f;
 
-    CharacterController characterController;
+    private PlayerGrenade playerGrenade;
+    private CharacterController characterController;
+    private PlayerShoot playerShoot;
+    private PlayerWeapon playerWeapon;
     Vector3 moveDirection = Vector3.zero;
     float rotationX = 0;
 
@@ -23,12 +27,6 @@ public class PlayerController : NetworkBehaviour
     [SerializeField]
     private float cameraYOffset = 0.4f;
     public Camera playerCamera;
-
-    [Header ("Grenades")]
-    public FragGrenade grenadePrefab;
-    public int maxGrenadeCount = 3;
-    private int currentGrenadeCount;
-
 
 
     public override void OnStartClient()
@@ -52,13 +50,13 @@ public class PlayerController : NetworkBehaviour
     void Start()
     {
         characterController = GetComponent<CharacterController>();
+        playerGrenade = GetComponent<PlayerGrenade>();
+        playerShoot = GetComponent<PlayerShoot>();
+        playerWeapon = GetComponent<PlayerWeapon>();
 
         // Lock cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-        
-        // Initialise nb of grenades
-        currentGrenadeCount = maxGrenadeCount;
     }
 
     void Update()
@@ -96,36 +94,31 @@ public class PlayerController : NetworkBehaviour
         }
 
         // throw grenade
-        if (Input.GetKeyDown(KeyCode.G) && currentGrenadeCount > 0)
+        if (Input.GetKeyDown(KeyCode.G) && playerGrenade.getCurrentGrenadeCount() > 0)
         {
-            ThrowGrenadeServerRpc();
+            playerGrenade.ThrowGrenadeServerRpc();
         }
-    }
 
-    [ServerRpc(RequireOwnership = false)]
-    void ThrowGrenadeServerRpc()
-    {
-        // Server side
-        if (currentGrenadeCount <= 0)
-            return;
-
-        if (grenadePrefab != null)
+        // shoot
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            Vector3 spawnPosition = transform.position + transform.forward * 6.0f;
-
-            // Créer la grenade et diminuer son nombre
-            FragGrenade grenadeInstance = Instantiate(grenadePrefab, spawnPosition, Quaternion.identity);
-            currentGrenadeCount--;
-
-            // Répliquer la grenade
-            ServerManager.Spawn(grenadeInstance.gameObject);
+            playerShoot.TryShoot();
         }
-    }
 
-    [Client]
-    public void RechargeGrenades(int amount)
-    {
-        currentGrenadeCount = Mathf.Min(currentGrenadeCount + amount, maxGrenadeCount);
-        // Debug.Log("Grenades rechargées. Nombre actuel de grenades : " + currentGrenadeCount);
+
+        // switch weapon between 1, 2, 3
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            playerWeapon.SwitchWeapon(WeaponType.Classic);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            playerWeapon.SwitchWeapon(WeaponType.Sniper);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            playerWeapon.SwitchWeapon(WeaponType.Pompe);
+        }
+
     }
 }
