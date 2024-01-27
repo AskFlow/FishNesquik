@@ -108,6 +108,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4015961740104956468}
   - component: {fileID: 6174522762933440403}
+  - component: {fileID: 5938428345213343421}
   - component: {fileID: 4015961740104956470}
   - component: {fileID: 4015961740104956465}
   - component: {fileID: 8695101098142122883}
@@ -136,6 +137,7 @@ Transform:
   - {fileID: 4015961739866413604}
   - {fileID: 2112137431798762300}
   - {fileID: 2816571459050908142}
+  - {fileID: 8674921816870689005}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -157,6 +159,28 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5938428345213343421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4015961740104956464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b95fc6f42e2f2a84aa3c54bfeef9df61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 4015961740104956465}
+  _networkObjectCache: {fileID: 4015961740104956465}
+  pickupButton: 101
+  raycastDistance: 2
+  pickupLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  pickupPosition: {fileID: 8674921816870689005}
+  cam: {fileID: 566374934778758699}
 --- !u!114 &4015961740104956470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -169,7 +193,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bea93cca97b6a24787b9eb4f9f4fdc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 0
+  _componentIndexCache: 1
   _addedNetworkObject: {fileID: 4015961740104956465}
   _networkObjectCache: {fileID: 4015961740104956465}
   walkingSpeed: 7.5
@@ -198,6 +222,7 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
+  - {fileID: 5938428345213343421}
   - {fileID: 4015961740104956470}
   - {fileID: 8695101098142122883}
   - {fileID: 2427995578035809124}
@@ -230,7 +255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 1
+  _componentIndexCache: 2
   _addedNetworkObject: {fileID: 4015961740104956465}
   _networkObjectCache: {fileID: 4015961740104956465}
   _componentConfiguration: 0
@@ -290,7 +315,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ef6a63bb49bc0f4da14f2349f3047a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 2
+  _componentIndexCache: 3
   _addedNetworkObject: {fileID: 4015961740104956465}
   _networkObjectCache: {fileID: 4015961740104956465}
   body: {fileID: 4015961739866413607}
@@ -307,7 +332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5255a49f4d5d2b649b0a796667e708d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 3
+  _componentIndexCache: 4
   _addedNetworkObject: {fileID: 4015961740104956465}
   _networkObjectCache: {fileID: 4015961740104956465}
   isServerAuth: 0
@@ -400,6 +425,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &8999837505156914099
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8674921816870689005}
+  m_Layer: 0
+  m_Name: PickupPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8674921816870689005
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8999837505156914099}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.408, y: 0, z: 1.426}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4015961740104956468}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9104450543888416727
 GameObject:
   m_ObjectHideFlags: 0
