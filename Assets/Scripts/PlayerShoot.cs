@@ -79,8 +79,11 @@ public class PlayerShoot : NetworkBehaviour
         if (timeSinceLastShoot >= timeBetweenShots)
         {
             lastShootTime = Time.time;
+
             if (!isRaycast && timeCanShoot)
+            {
                 ShootPhysic(sprayAngle, timeBetweenShots, numberOfBullets);
+            }
             else if (isRaycast && timeCanShoot)
             {
                 if (isServerAuth)
@@ -151,25 +154,18 @@ public class PlayerShoot : NetworkBehaviour
 
         for (int i = 0; i < numberOfBullets; i++)
         {
-            // Utilise la rotation de la caméra pour obtenir la direction du tir
             Vector3 shootDirection = playerCamera.transform.forward;
-
-            // Applique un angle de dispersion aléatoire
             Quaternion randomRotation = Quaternion.Euler(Random.Range(-sprayAngle, sprayAngle), Random.Range(-sprayAngle, sprayAngle), 0f);
             Vector3 finalDirection = randomRotation * shootDirection;
-
-            // Détermine la position de spawn
             Vector3 spawnPosition = playerCamera.transform.position + finalDirection * 3;
-
-            // Détermine la rotation de spawn
             Quaternion spawnRotation = Quaternion.LookRotation(finalDirection);
 
-            // Instancie le projectile
+            // Create projectile
             GameObject projectileInstance = Instantiate(projectilePrefab, spawnPosition, spawnRotation);
             ServerManager.Spawn(projectileInstance.gameObject);
         }
 
-        // Attend le délai entre chaque tir
+        // Wait until be able to shoot again
         yield return new WaitForSeconds(timeBetweenShots);
 
         timeCanShoot = true;

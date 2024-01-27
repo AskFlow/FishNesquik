@@ -105,7 +105,6 @@ public class PlayerController : NetworkBehaviour
             playerShoot.TryShoot();
         }
 
-
         // switch weapon between 1, 2, 3
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
@@ -117,7 +116,7 @@ public class PlayerController : NetworkBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            playerWeapon.SwitchWeapon(WeaponType.Pompe);
+            playerWeapon.SwitchWeapon(WeaponType.Shotgun);
         }
 
     }

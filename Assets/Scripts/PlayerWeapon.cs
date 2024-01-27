@@ -6,7 +6,7 @@ using FishNet.Object.Synchronizing;
 
 public class PlayerWeapon : NetworkBehaviour
 {
-    public enum WeaponType { Classic, Sniper, Pompe }
+    public enum WeaponType { Classic, Sniper, Shotgun }
 
     [Header("Situation")]
     public WeaponType currentWeapon;
@@ -26,17 +26,12 @@ public class PlayerWeapon : NetworkBehaviour
     [SerializeField] private GameObject projectileSniper;
     [SerializeField] private GameObject projectilePompe;
 
-
-    [SyncVar]
-    private bool isShootingEnabled = false;
-
     void Start()
     {
         playerShoot = GetComponent<PlayerShoot>();
         SwitchWeapon(WeaponType.Classic);
     }
 
-    // Méthode pour changer d'arme
     public void SwitchWeapon(WeaponType newWeapon)
     {
         if (CanSwitchToWeapon(newWeapon))
@@ -46,7 +41,6 @@ public class PlayerWeapon : NetworkBehaviour
 
             UpdateShootParameters();
             UpdateWeaponColor();
-            SetShootingEnabled(true);
         }
         else
         {
@@ -54,7 +48,6 @@ public class PlayerWeapon : NetworkBehaviour
         }
     }
 
-    // Méthode pour mettre à jour les paramètres de tir en fonction de l'arme actuelle
     private void UpdateShootParameters()
     {
         switch (currentWeapon)
@@ -66,7 +59,7 @@ public class PlayerWeapon : NetworkBehaviour
             case WeaponType.Sniper:
                 SetShootParameters(true, 0f, 0f, 0, projectileSniper);
                 break;
-            case WeaponType.Pompe:
+            case WeaponType.Shotgun:
                 SetShootParameters(false, 8f, 1f, 5, projectilePompe);
                 break;
             default:
@@ -92,7 +85,7 @@ public class PlayerWeapon : NetworkBehaviour
         {
             case WeaponType.Sniper:
                 return sniperUnlocked;
-            case WeaponType.Pompe:
+            case WeaponType.Shotgun:
                 return pompeUnlocked;
             case WeaponType.Classic:
                 return classicUnlocked;
@@ -108,7 +101,7 @@ public class PlayerWeapon : NetworkBehaviour
             case WeaponType.Sniper:
                 sniperUnlocked = true;
                 break;
-            case WeaponType.Pompe:
+            case WeaponType.Shotgun:
                 pompeUnlocked = true;
                 break;
             case WeaponType.Classic:
@@ -131,11 +124,5 @@ public class PlayerWeapon : NetworkBehaviour
         playerShoot.SetTimeBetweenShots(timeBetweenShots);
         playerShoot.SetNumberOfBullets(numberOfBullets);
         playerShoot.SetProjectilePrefab(projectile);
-    }
-
-    [ServerRpc]
-    private void SetShootingEnabled(bool enabled)
-    {
-        isShootingEnabled = enabled;
     }
 }
