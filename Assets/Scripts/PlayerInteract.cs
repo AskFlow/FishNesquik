@@ -106,11 +106,8 @@ public class PlayerInteract : NetworkBehaviour
         }
         else if (hasObjectInHand)
         {
-            if (hit.transform.gameObject.CompareTag("Weapon"))
-            {
-                playerController.canShoot = false;
-            }
             Drop();
+            weapon.SwitchWeapon();
             SetObjectInHandServer(hit.transform.gameObject, pickupPosition.position, pickupPosition.rotation, gameObject);
             objInHand = hit.transform.gameObject;
             hasObjectInHand = true;

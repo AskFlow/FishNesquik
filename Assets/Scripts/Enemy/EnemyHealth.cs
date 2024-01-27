@@ -14,6 +14,9 @@ public class EnemyHealth : NetworkBehaviour
     private float timeBeforeDestroy = 3.0f;
     [SerializeField]
     private GameObject objToLoot;
+    [SerializeField]
+    private bool isDead;
+
 
     [SerializeField]
     private float probabilityOfLoot = 100f;
@@ -23,8 +26,9 @@ public class EnemyHealth : NetworkBehaviour
 
     private void Update()
     {
-        if (health <= 0)
+        if (health <= 0 && !isDead)
         {
+            isDead = true;
             StartCoroutine(DeathCoroutine());
         }
     }
@@ -68,7 +72,7 @@ public class EnemyHealth : NetworkBehaviour
                 yield return new WaitForSeconds(0.1f);
                 gameObject.SetActive(false);
                 ServerManager.Despawn(gameObject);
-
+                StopCoroutine(DeathCoroutine());
             }
         }
     }
