@@ -175,7 +175,8 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 4015961740104956465}
   _networkObjectCache: {fileID: 4015961740104956465}
   pickupButton: 101
-  raycastDistance: 2
+  dropButton: 97
+  raycastDistance: 10
   pickupLayer:
     serializedVersion: 2
     m_Bits: 64
