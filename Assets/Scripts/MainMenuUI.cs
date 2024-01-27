@@ -31,6 +31,7 @@ public class MainMenuUI : MonoBehaviour
     private void ClientManager_OnClientConnectionState(ClientConnectionStateArgs obj)
     {
         _clientState = obj.ConnectionState;
+
     }
 
 

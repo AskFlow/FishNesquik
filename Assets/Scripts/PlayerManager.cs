@@ -1,27 +1,64 @@
+using FishNet.Connection;
 using FishNet.Object;
+using FishNet.Object.Synchronizing;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : NetworkBehaviour
 {
-    public static PlayerManager Instance { get; private set; }
+    //[SyncVar] public List<NetworkObject> networkObjects = new List<NetworkObject>();
+
+    [SyncObject]
+    private readonly SyncList<NetworkConnection> _players = new SyncList<NetworkConnection>();
     
-    
-    
-    public List<NetworkObject> networkObjects = new List<NetworkObject>();
+    public delegate void NetworkObjectAddedDelegate(NetworkConnection networkObject);
+    public NetworkObjectAddedDelegate networkObjectAddedDelegate;
+    public delegate void NetworkObjectRemovedDelegate(NetworkConnection networkObject);
+    public NetworkObjectRemovedDelegate networkObjectRemovedDelegate;
 
 
-    private void Awake()
+    public override void OnStartServer()
     {
-        if (Instance != null && Instance != this)
+        base.OnStartServer();
+
+        StartCoroutine(DebugList());
+    }
+
+    public IEnumerator DebugList()
+    {
+        while (true)
         {
-            Destroy(this);
+            Debug.Log("Serveur update : ");
+            int index = 0;
+            foreach (var item in _players)
+            {
+                Debug.Log(item);
+                ShowPlayerList(index);
+                index++;
+            
+            }
+            Debug.Log("=====");
+
+            yield return new WaitForSeconds(1);
         }
-        else
-        {
-            Instance = this;
-        }
+    }
+
+    [ObserversRpc]
+    public void ShowPlayerList(int index)
+    {
+        Debug.Log(_players[index].ClientId);
+    }
+
+    public void AddPlayer(NetworkConnection player)
+    {
+        _players.Add(player);
+        networkObjectAddedDelegate(player);
+    }
+
+    public void RemovePlayer(NetworkConnection player)
+    {
+
+        _players.Remove(player);
+        networkObjectRemovedDelegate(player);
     }
 }

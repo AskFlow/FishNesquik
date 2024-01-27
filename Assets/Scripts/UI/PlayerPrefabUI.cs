@@ -1,3 +1,4 @@
+using FishNet.Connection;
 using FishNet.Object;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,22 +6,38 @@ using UnityEngine;
 
 public class PlayerPrefabUI : NetworkBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+
+    public override void OnStartClient()
     {
-        PlayerManager.Instance.networkObjects.Add(GetComponent<NetworkObject>());
+        base.OnStartClient();
+        if (!IsOwner) { return; }
+
+        PlayerManager playerManager = FindObjectOfType<PlayerManager>();
+        if (IsServer)
+        {
+            playerManager.AddPlayer(Owner);
+        }
+        else
+        {
+            AddPlayerToServerRpc(Owner);
+        }
+    }
+
+    [ServerRpc(RequireOwnership =false)]
+    public void AddPlayerToServerRpc(NetworkConnection player)
+    {
+        PlayerManager playerManager = FindObjectOfType<PlayerManager>();
+        playerManager.AddPlayer(player);
 
     }
 
-    // Update is called once per frame
-    void Update()
+
+    public override void OnStopClient()
     {
-        
+        base.OnStopClient();
+        FindObjectOfType<PlayerManager>().RemovePlayer(Owner);
+
     }
 
-    private void OnDestroy()
-    {
-        PlayerManager.Instance.networkObjects.Remove(GetComponent<NetworkObject>());
-    }
 }
 

@@ -1,3 +1,4 @@
+using FishNet.Connection;
 using FishNet.Managing;
 using FishNet.Managing.Server;
 using FishNet.Object;
@@ -15,64 +16,90 @@ public class LobbyUI : NetworkBehaviour
     public GameObject parentClient;
     public GameObject parentOwner;
 
-    public Dictionary<NetworkObject, GameObject> players = new Dictionary<NetworkObject, GameObject>();
+    public Dictionary<NetworkConnection, NetworkObject> players = new Dictionary<NetworkConnection, NetworkObject>();
 
-    public (NetworkObject, GameObject) owner;
+    public (NetworkConnection, GameObject) owner;
 
-    [SyncVar] GameObject instanciedGameObject;
 
-    private void Update()
+
+    public void Start()
     {
-        foreach (var item in PlayerManager.Instance.networkObjects)
+        if (IsServer)
         {
-            Debug.Log(item.IsServer);
-            Debug.Log(item.IsOwner);
-            if (!item.IsOwner) { continue; }
-            if (!players.ContainsKey(item) && !owner.Item1 == item)
-            {
-                GameObject parent = IsServer ? parentOwner : parentClient;
-
-
-                ServerSpawn(parent);
-                Debug.Log(instanciedGameObject);
-                SetClientOwner(item, instanciedGameObject);
-                if (IsServer)
-                {
-                    owner.Item1 = item;
-                    owner.Item2 = instanciedGameObject;
-                }
-                else
-                {
-                    players.Add(item, instanciedGameObject);
-                }
-            }
+            PlayerManager oui = FindObjectOfType<PlayerManager>();
+            oui.networkObjectAddedDelegate += OnPlayerAdded;
+            oui.networkObjectRemovedDelegate += OnPlayerRemoved;
         }
     }
 
-    [ServerRpc(RequireOwnership =false)]
-    public void ServerSpawn(GameObject parent)
+    [Server]
+    public void OnPlayerAdded(NetworkConnection player)
     {
-        GameObject go = Instantiate(prefab, parent.transform);
-        ServerManager.Spawn(go);
-        instanciedGameObject = go;
+        NetworkObject parent;
+        if(player.IsHost)
+        {
+            parent = parentOwner.GetComponent<NetworkObject>();
+        }
+        else
+        {
+            parent = parentClient.GetComponent<NetworkObject>();
+
+        }
+        NetworkObject go = Instantiate(prefab, parent.RuntimeParentTransform).GetComponent<NetworkObject>();
+        Spawn(go,player);
+        go.GiveOwnership(player);
+        go.SetParent(parent);
+        SetParent(go);
+        players.Add(player, go);
+
+    }
+
+    [ServerRpc]
+    public void OnPlayerRemoved(NetworkConnection player)
+    {
+
+    }
+
+
+    [ObserversRpc(ExcludeServer =true)]
+    public void SetParent(NetworkObject obj)
+    {
+        obj.SetParent(parentClient.GetComponent<NetworkObject>());
+
+    }
+
+    [ServerRpc(RequireOwnership =false)]
+    public void PressReadyServerRpc(NetworkConnection conn)
+    {
+        players[conn].GetComponent<PlayerCard>().ToggleToggle();
+    }
+
+    [TargetRpc]
+    public void PressReadyUserRpc(NetworkConnection conn)
+    {
+
     }
 
     public void PressReady()
     {
-        if(IsServer)
-        {
-            owner.Item2.GetComponent<PlayerCard>().isReady = !owner.Item2.GetComponent<PlayerCard>().isReady;
-        }
-        else
-        {
-            foreach (var item in players)
-            {
-                if(OwnerId == item.Key.OwnerId)
-                {
-                    item.Value.GetComponent<PlayerCard>().isReady = !item.Value.GetComponent<PlayerCard>().isReady;
-                }
-            }
-        }
+
+        PressReadyServerRpc(Owner);
+
+
+        //if(IsServer)
+        //{
+        //    owner.Item2.GetComponent<PlayerCard>().isReady = !owner.Item2.GetComponent<PlayerCard>().isReady;
+        //}
+        //else
+        //{
+        //    foreach (var item in players)
+        //    {
+        //        if(OwnerId == item.Key.OwnerId)
+        //        {
+        //            item.Value.GetComponent<PlayerCard>().isReady = !item.Value.GetComponent<PlayerCard>().isReady;
+        //        }
+        //    }
+        //}
     }
 
     [ObserversRpc]

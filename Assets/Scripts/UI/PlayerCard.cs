@@ -15,25 +15,33 @@ public class PlayerCard : NetworkBehaviour
     public bool isReady;
 
 
-    void Start()
+    public override void OnStartClient()
     {
-        
+        base.OnStartClient();
+        if(IsOwner)
+        {
+            backgroundImage.color = isPlayerColor;
+            youText.gameObject.SetActive(true);
+        }
     }
 
-
+    public void ToggleToggle()
+    {
+        toggle.isOn = !toggle.isOn;
+    }
 
     void Update()
     {
-        if (isPlayer)
-        {
-            backgroundImage.color = isPlayerColor;
-            youText.enabled = true;
-        }
-        else
-        {
-            youText.enabled = false;
+        //if (isPlayer)
+        //{
+        //    backgroundImage.color = isPlayerColor;
+        //    youText.enabled = true;
+        //}
+        //else
+        //{
+        //    youText.enabled = false;
 
-        }
-        toggle.isOn = isReady;
+        //}
+        //toggle.isOn = isReady;
     }
 }
