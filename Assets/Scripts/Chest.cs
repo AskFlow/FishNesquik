@@ -8,7 +8,6 @@ public class Chest : NetworkBehaviour
     [SerializeField]
     private GameObject objectToLootPrefab;
 
-    
     private GameObject spawnedObject;
     private Vector3 addspawn = new Vector3(0.0f,0.0f, 2.0f);
 
