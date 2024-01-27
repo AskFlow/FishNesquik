@@ -12,7 +12,14 @@ public class EnemyHealth : NetworkBehaviour
     private Animator animator;
     [SerializeField]
     private float timeBeforeDestroy = 3.0f;
+    [SerializeField]
+    private GameObject objToLoot;
 
+    [SerializeField]
+    private float probabilityOfLoot = 100f;
+
+
+    private GameObject spawnedObject;
 
     private void Update()
     {
@@ -53,8 +60,15 @@ public class EnemyHealth : NetworkBehaviour
         {
             if (gameObject != null && gameObject.activeSelf)
             {
+             
+                if (objToLoot != null && Random.Range(0.0f, 100.0f) <= probabilityOfLoot)
+                {
+                    SpawnedObject(objToLoot, this);
+                }
+                yield return new WaitForSeconds(0.1f);
                 gameObject.SetActive(false);
                 ServerManager.Despawn(gameObject);
+
             }
         }
     }
@@ -65,4 +79,21 @@ public class EnemyHealth : NetworkBehaviour
         health += amountToChange;
 
     }
+
+
+    [ServerRpc(RequireOwnership = false)]
+    void SpawnedObject(GameObject obj, EnemyHealth script)
+    {
+        GameObject spawned = Instantiate(obj, gameObject.transform.position , Quaternion.identity);
+
+        ServerManager.Spawn(spawned);
+        SetSpawnedObject(spawned, script);
+    }
+
+    [ObserversRpc]
+    void SetSpawnedObject(GameObject spawned, EnemyHealth script)
+    {
+        script.spawnedObject = spawned;
+    }
+
 }
