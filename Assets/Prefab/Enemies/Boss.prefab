@@ -206,7 +206,10 @@ MonoBehaviour:
   animator: {fileID: 0}
   timeBeforeDestroy: 3
   objToLoot: {fileID: 1634961190079951899, guid: bdbe277985361be4da705ae0495a9519, type: 3}
+  isdead: 0
   probabilityOfLoot: 100
+  isBoss: 1
+  doors: []
 --- !u!114 &-4710461495712847420
 MonoBehaviour:
   m_ObjectHideFlags: 0

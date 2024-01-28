@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Pve.unity
+    guid: 5996daf59774fec4085dd4bf03f634ea
+  - enabled: 0
     path: Assets/Scenes/Jerome.unity
     guid: 0a28c37c631104b45a6af48946d86b36
   - enabled: 0
