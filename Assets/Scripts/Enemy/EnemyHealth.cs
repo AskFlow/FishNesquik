@@ -1,3 +1,4 @@
+using FishNet.Managing.Timing;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections;
@@ -17,7 +18,7 @@ public class EnemyHealth : NetworkBehaviour
 
     [SerializeField]
     private float probabilityOfLoot = 100f;
-
+    public bool isBoss = false;
 
     private GameObject spawnedObject;
 
@@ -26,6 +27,11 @@ public class EnemyHealth : NetworkBehaviour
         if (health <= 0)
         {
             StartCoroutine(DeathCoroutine());
+
+            if (isBoss)
+            {
+                GameManagerFake.Instance.Victory();
+            }
         }
     }  
 
@@ -82,7 +88,6 @@ public class EnemyHealth : NetworkBehaviour
     public void UpdateHealth(int amountToChange)
     {
         health += amountToChange;
-
     }
 
 

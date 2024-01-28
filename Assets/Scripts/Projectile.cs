@@ -38,14 +38,14 @@ public class Projectile : NetworkBehaviour
                 Vector3 particlesPosition = other.gameObject.transform.position + new Vector3(0, 1f, 0);
                 Instantiate(hitParticle, particlesPosition, Quaternion.identity);
             }
-
         }
+
         if (other.CompareTag("Player"))
         {
             Despawn();
         }
-
     }
+
 
     [Server]
     private void ApplyDamage(GameObject resultHit, int damage)

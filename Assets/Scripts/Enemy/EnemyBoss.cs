@@ -5,6 +5,7 @@ using System.Collections;
 using UnityEngine.AI;
 using System;
 using System.Collections.Generic;
+using FishNet.Managing.Timing;
 
 public class EnemyBoss : NetworkBehaviour
 {
@@ -354,7 +355,5 @@ public class EnemyBoss : NetworkBehaviour
             ServerManager.Despawn(gameObject);
         }
     }
-
-
 
 }
