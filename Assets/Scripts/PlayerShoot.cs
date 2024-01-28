@@ -73,6 +73,11 @@ public class PlayerShoot : NetworkBehaviour
         lastShootTime = Time.time;
     }
 
+    private void Update()
+    {
+        Debug.Log(projectilePrefab);
+    }
+
     public void TryShoot()
     {
         float timeSinceLastShoot = Time.time - lastShootTime;
@@ -163,6 +168,7 @@ public class PlayerShoot : NetworkBehaviour
 
             // Détermine la rotation de spawn
             Quaternion spawnRotation = Quaternion.LookRotation(finalDirection);
+
 
             // Instancie le projectile
             GameObject projectileInstance = Instantiate(projectilePrefab, spawnPosition, spawnRotation);

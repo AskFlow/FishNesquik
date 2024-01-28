@@ -35,8 +35,12 @@ public class PlayerInteract : NetworkBehaviour
         {
             enabled = false;
         }
-        worldObjectHolder = GameObject.FindGameObjectWithTag("WorldObjects").transform;
 
+        worldObjectHolder = GameObject.FindGameObjectWithTag("WorldObjects").transform;
+        if(worldObjectHolder == null)
+        {
+            worldObjectHolder = transform;
+        }
     }
 
     private void Start()
@@ -145,8 +149,7 @@ public class PlayerInteract : NetworkBehaviour
         objInHand = null;
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    void DropObjectServer(GameObject obj, Transform worldObjects)
+    [ServerRpc(RequireOwnership = false)]    void DropObjectServer(GameObject obj, Transform worldObjects)
     {
         DropObjectObserver(obj, worldObjects);
     }
@@ -157,6 +160,7 @@ public class PlayerInteract : NetworkBehaviour
         obj.transform.parent = worldObjects;
 
         if (obj.GetComponent<Rigidbody>() != null)
+
         {
             obj.GetComponent<Rigidbody>().isKinematic = false;
         }
