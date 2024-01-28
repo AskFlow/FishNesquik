@@ -19773,7 +19773,6 @@ GameObject:
   - component: {fileID: 5618768567928046496}
   - component: {fileID: 5618768567928046498}
   - component: {fileID: 5618768567928046499}
-  - component: {fileID: 6568596890572355904}
   m_Layer: 0
   m_Name: ruined wall.001
   m_TagString: Untagged
@@ -19789,9 +19788,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5618768567928046497}
   m_LocalRotation: {x: 0.15174077, y: 0.6867018, z: 0.70577574, w: -0.08541667}
-  m_LocalPosition: {x: 26.085833, y: -1.4663206, z: -10.402018}
-  m_LocalScale: {x: 99.999985, y: 100, z: 100.00002}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 27.171585, y: -1.4663206, z: -10.402018}
+  m_LocalScale: {x: 138.98, y: 138.98, z: 138.98}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5618768568876329984}
   m_RootOrder: 397
@@ -19847,20 +19846,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &6568596890572355904
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5618768567928046497}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 4144864844407297410, guid: 298f115a3dc1d5c4fb19dd321ab2c1d0, type: 3}
 --- !u!1 &5618768567929450997
 GameObject:
   m_ObjectHideFlags: 0
