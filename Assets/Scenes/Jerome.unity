@@ -1274,6 +1274,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainUI
       objectReference: {fileID: 0}
+    - target: {fileID: 4372885740071010425, guid: d48e0e79f6cd33c47a4dff99d29d9967, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4372885740071010425, guid: d48e0e79f6cd33c47a4dff99d29d9967, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d48e0e79f6cd33c47a4dff99d29d9967, type: 3}
 --- !u!1001 &8870319899524092304
