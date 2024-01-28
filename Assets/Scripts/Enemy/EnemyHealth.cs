@@ -15,6 +15,8 @@ public class EnemyHealth : NetworkBehaviour
     private float timeBeforeDestroy = 3.0f;
     [SerializeField]
     private GameObject objToLoot;
+    [SerializeField]
+    private bool isdead;
 
     [SerializeField]
     private float probabilityOfLoot = 100f;
@@ -45,47 +47,50 @@ public class EnemyHealth : NetworkBehaviour
 
     public IEnumerator DeathCoroutine()
     {
-        if (animator)
-        {
-            animator.SetBool("IsDead", true);
-            if (TryGetComponent(out EnemyKamikaze stopMovementKamikaze))
+        if (!isdead) {
+            isdead = true;
+            if (animator)
             {
-                stopMovementKamikaze.enabled = false;
-            }
-            if (TryGetComponent(out EnemyDistance stopMovementDistance))
-            {
-                stopMovementDistance.isDead = true;
-                stopMovementDistance.enabled = false;
-            }
-            if (TryGetComponent(out EnemyBoss stopMovementBoss))
-            {
-                stopMovementBoss.enabled = false;
-            }
-        }
-
-        Canvas healthUI = GetComponentInChildren<Canvas>();
-        healthUI.enabled = false;
-
-        if (animator)
-        {
-            while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Die"))
-            {
-                yield return null;
-            }
-            yield return new WaitForSeconds(timeBeforeDestroy);
-        }
-
-        if (IsServer)
-        {
-            if (gameObject != null && gameObject.activeSelf)
-            {
-                if (objToLoot != null && Random.Range(0.0f, 100.0f) <= probabilityOfLoot)
+                animator.SetBool("IsDead", true);
+                if (TryGetComponent(out EnemyKamikaze stopMovementKamikaze))
                 {
-                    SpawnedObject(objToLoot, this);
+                    stopMovementKamikaze.enabled = false;
                 }
-                yield return new WaitForSeconds(0.1f);
-                gameObject.SetActive(false);
-                ServerManager.Despawn(gameObject);
+                if (TryGetComponent(out EnemyDistance stopMovementDistance))
+                {
+                    stopMovementDistance.isDead = true;
+                    stopMovementDistance.enabled = false;
+                }
+                if (TryGetComponent(out EnemyBoss stopMovementBoss))
+                {
+                    stopMovementBoss.enabled = false;
+                }
+            }
+
+            Canvas healthUI = GetComponentInChildren<Canvas>();
+            healthUI.enabled = false;
+
+            if (animator)
+            {
+                while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Die"))
+                {
+                    yield return null;
+                }
+                yield return new WaitForSeconds(timeBeforeDestroy);
+            }
+
+            if (IsServer)
+            {
+                if (gameObject != null && gameObject.activeSelf)
+                {
+                    if (objToLoot != null && Random.Range(0.0f, 100.0f) <= probabilityOfLoot)
+                    {
+                        SpawnedObject(objToLoot, this);
+                    }
+                    yield return new WaitForSeconds(0.1f);
+                    gameObject.SetActive(false);
+                    ServerManager.Despawn(gameObject);
+                }
             }
         }
     }
