@@ -29,6 +29,8 @@ public class EnemyDistance : NetworkBehaviour
     private bool shouldShoot = false;
     [SerializeField] private Transform aimStart;
     private bool coroutineHasStarted = false;
+    [SerializeField] private  float sprayAngle = 15f;
+
 
     [System.Serializable]
     public struct MinMaxFloat
@@ -144,7 +146,11 @@ public class EnemyDistance : NetworkBehaviour
         {
             // Shoot projectile towards aimStart position
             Vector3 spawnPosition = aimStart.position;
-            Quaternion spawnRotation = Quaternion.LookRotation(playerToAim.position - aimStart.position);
+            Quaternion randomRotation = Quaternion.Euler(Random.Range(-sprayAngle, sprayAngle), Random.Range(-sprayAngle, sprayAngle), 0f);
+            Vector3 finalDirection = randomRotation * (playerToAim.position - aimStart.position);
+            Quaternion spawnRotation = Quaternion.LookRotation(finalDirection);
+            // Quaternion spawnRotation = Quaternion.LookRotation(playerToAim.position - aimStart.position);
+
             GameObject projectileInstance = Instantiate(projectilePrefab, spawnPosition, spawnRotation);
             ServerManager.Spawn(projectileInstance.gameObject);
 
