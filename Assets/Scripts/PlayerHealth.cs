@@ -19,8 +19,8 @@ public class PlayerHealth : NetworkBehaviour
     {
         base.OnStartClient();
 
-        if (!base.IsOwner)
-            GetComponent<PlayerHealth>().enabled = false;
+        //if (!base.IsOwner)
+        //    GetComponent<PlayerHealth>().enabled = false;
 
         // Trouver le Slider dans le MainUI
         GameObject mainUI = GameObject.Find("MainUI");
