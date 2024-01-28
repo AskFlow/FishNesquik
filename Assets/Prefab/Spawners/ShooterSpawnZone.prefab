@@ -106,7 +106,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 1314781090412268596}
   _networkObjectCache: {fileID: 1314781090412268596}
   enemyPrefab: {fileID: 1508817308227530, guid: b09191006fa14d64d97df0de8b286d1f, type: 3}
-  numberOfEnemiesToSpawn: 3
+  numberOfEnemiesToSpawn: 1
   timeBeforeEachSpawn: 2
   spawnPosition: {fileID: 5995384214255330386}
   robotToHide: {fileID: 8924352089011482272}
@@ -129,10 +129,11 @@ MonoBehaviour:
   _networkBehaviours:
   - {fileID: 1314781090412268597}
   <ParentNetworkObject>k__BackingField: {fileID: 0}
-  <ChildNetworkObjects>k__BackingField: []
+  <ChildNetworkObjects>k__BackingField:
+  - {fileID: 431115847367819693}
   SerializedTransformProperties:
-    Position: {x: 0, y: 2.474, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    Position: {x: -27.310001, y: -21.383236, z: 2.649994}
+    Rotation: {x: -0, y: -0, z: -0, w: 1}
     LocalScale: {x: 1, y: 1, z: 1}
   _isNetworked: 1
   _isGlobal: 0
@@ -274,8 +275,31 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9090187843070157649, guid: 8b0ffa3c8189c3b4aa675ca7d2bcaf16, type: 3}
+      propertyPath: <IsNested>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9090187843070157649, guid: 8b0ffa3c8189c3b4aa675ca7d2bcaf16, type: 3}
+      propertyPath: <ComponentIndex>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9090187843070157649, guid: 8b0ffa3c8189c3b4aa675ca7d2bcaf16, type: 3}
+      propertyPath: <ParentNetworkObject>k__BackingField
+      value: 
+      objectReference: {fileID: 1314781090412268596}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8b0ffa3c8189c3b4aa675ca7d2bcaf16, type: 3}
+--- !u!114 &431115847367819693 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 9090187843070157649, guid: 8b0ffa3c8189c3b4aa675ca7d2bcaf16, type: 3}
+  m_PrefabInstance: {fileID: 8925417830395142908}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8924352089011482272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &8920509709898436010 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4908680227630934, guid: 8b0ffa3c8189c3b4aa675ca7d2bcaf16, type: 3}

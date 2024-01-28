@@ -19,6 +19,9 @@ public class EnemyHealth : NetworkBehaviour
     private float probabilityOfLoot = 100f;
 
 
+    [SerializeField]
+    private Door[] doors;
+
     private GameObject spawnedObject;
 
     private void Update()
@@ -27,7 +30,12 @@ public class EnemyHealth : NetworkBehaviour
         {
             StartCoroutine(DeathCoroutine());
         }
-    }  
+    }
+
+    private void Start()
+    {
+        doors = FindObjectsOfType<Door>();
+    }
 
     public IEnumerator DeathCoroutine()
     {
@@ -48,7 +56,7 @@ public class EnemyHealth : NetworkBehaviour
                 stopMovementBoss.enabled = false;
             }
         }
-        
+
         Canvas healthUI = GetComponentInChildren<Canvas>();
         healthUI.enabled = false;
 
@@ -65,7 +73,6 @@ public class EnemyHealth : NetworkBehaviour
         {
             if (gameObject != null && gameObject.activeSelf)
             {
-             
                 if (objToLoot != null && Random.Range(0.0f, 100.0f) <= probabilityOfLoot)
                 {
                     SpawnedObject(objToLoot, this);
@@ -73,7 +80,6 @@ public class EnemyHealth : NetworkBehaviour
                 yield return new WaitForSeconds(0.1f);
                 gameObject.SetActive(false);
                 ServerManager.Despawn(gameObject);
-
             }
         }
     }

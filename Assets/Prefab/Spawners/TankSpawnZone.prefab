@@ -106,7 +106,7 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 1314781090412268596}
   _networkObjectCache: {fileID: 1314781090412268596}
   enemyPrefab: {fileID: 1864840046505020, guid: 1b9539d3a83add242bc52578ef007a69, type: 3}
-  numberOfEnemiesToSpawn: 3
+  numberOfEnemiesToSpawn: 1
   timeBeforeEachSpawn: 2
   spawnPosition: {fileID: 8618164592321547374}
   robotToHide: {fileID: 5852140578426975062}
@@ -131,8 +131,8 @@ MonoBehaviour:
   <ParentNetworkObject>k__BackingField: {fileID: 0}
   <ChildNetworkObjects>k__BackingField: []
   SerializedTransformProperties:
-    Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 1}
+    Position: {x: 5.63, y: -21.38324, z: 1.26}
+    Rotation: {x: -0, y: -0, z: -0, w: 1}
     LocalScale: {x: 1, y: 1, z: 1}
   _isNetworked: 1
   _isGlobal: 0

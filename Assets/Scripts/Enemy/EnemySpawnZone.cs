@@ -5,13 +5,16 @@ using FishNet.Object;
 public class EnemySpawnZone : NetworkBehaviour
 {
     public GameObject enemyPrefab;
-    public int numberOfEnemiesToSpawn = 3;
+    public int numberOfEnemiesToSpawn = 1;
     [SerializeField]
     private float timeBeforeEachSpawn = 2f;
     [SerializeField]
     private GameObject spawnPosition;
     [SerializeField]
     private GameObject robotToHide;
+    [SerializeField]
+    public bool finish = false;
+
     private bool hasBeenActivated = false;
     [HideInInspector]
     public GameObject spawnedObject;
@@ -39,6 +42,7 @@ public class EnemySpawnZone : NetworkBehaviour
             SpawnEnemy(enemyPrefab, spawnPosition, this);
             yield return new WaitForSeconds(delay);
         }
+        finish = true;
     }
 
     [ServerRpc(RequireOwnership = false)]
