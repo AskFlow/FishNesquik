@@ -51,12 +51,14 @@ namespace FishNet.Example.Prediction.CharacterControllers
 
         #region Private.
         private CharacterController _characterController;
+        public Camera cameraPlayer;
         #endregion
 
         private void Awake()
         {
             InstanceFinder.TimeManager.OnTick += TimeManager_OnTick;
             _characterController = GetComponent<CharacterController>();
+
         }
 
         public override void OnStartClient()
@@ -98,10 +100,14 @@ namespace FishNet.Example.Prediction.CharacterControllers
             if (horizontal == 0f && vertical == 0f)
                 return;
 
+
+
+            Vector3 directionDep = cameraPlayer.transform.right * horizontal + cameraPlayer.transform.forward * vertical;
+
             md = new MoveData()
             {
-                Horizontal = horizontal,
-                Vertical = vertical
+                Horizontal = directionDep.x,
+                Vertical = directionDep.y
             };
         }
 

@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 35a4b610d8007e046a9adc43ecfebac9
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - _addedNetworkObject: {instanceID: 0}
+  - _networkObjectCache: {instanceID: 0}
+  - nearestPlayer: {instanceID: 0}
+  - movementSound: {fileID: 8300000, guid: 0cd4c9657dffeff46b21daf2fc3fabcd, type: 3}
+  - explosionSound: {fileID: 8300000, guid: e7b53fcf073b971498c12f242c7fdca2, type: 3}
+  - explosionEffectPrefab: {fileID: 191186, guid: 079954accd64b32419ec069129c81273, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
