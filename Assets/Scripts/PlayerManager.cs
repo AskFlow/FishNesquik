@@ -1,3 +1,4 @@
+using FishNet;
 using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
@@ -7,6 +8,9 @@ using UnityEngine;
 public class PlayerManager : NetworkBehaviour
 {
     //[SyncVar] public List<NetworkObject> networkObjects = new List<NetworkObject>();
+
+
+    public GameObject playerPrefab;
 
     [SyncObject]
     private readonly SyncList<NetworkConnection> _players = new SyncList<NetworkConnection>();
@@ -20,7 +24,6 @@ public class PlayerManager : NetworkBehaviour
     public override void OnStartServer()
     {
         base.OnStartServer();
-
         StartCoroutine(DebugList());
     }
 
@@ -49,6 +52,22 @@ public class PlayerManager : NetworkBehaviour
         Debug.Log(_players[index].ClientId);
     }
 
+    public void SpawnPlayer()
+    {
+        SpawnPlayerServerRpc();
+    }
+
+    [ServerRpc]
+    public void SpawnPlayerServerRpc()
+    {
+        foreach (var item in _players)
+        {
+            GameObject go = Instantiate(playerPrefab);
+            Spawn(go, item);
+
+        }
+    }
+
     public void AddPlayer(NetworkConnection player)
     {
         _players.Add(player);
@@ -57,7 +76,6 @@ public class PlayerManager : NetworkBehaviour
 
     public void RemovePlayer(NetworkConnection player)
     {
-
         _players.Remove(player);
         networkObjectRemovedDelegate(player);
     }
