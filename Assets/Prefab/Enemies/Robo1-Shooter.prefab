@@ -601,6 +601,10 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 4746802322451413754}
   _networkObjectCache: {fileID: 4746802322451413754}
   health: 100
+  animator: {fileID: 95491499780641650}
+  timeBeforeDestroy: 3
+  objToLoot: {fileID: 1634961190079951899, guid: bdbe277985361be4da705ae0495a9519, type: 3}
+  probabilityOfLoot: 100
 --- !u!114 &8853060736428157785
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -626,6 +630,7 @@ MonoBehaviour:
     Max: 0
   projectilePrefab: {fileID: 5897218871136879848, guid: ffe97752845a5824b8b6f0f5dbc6eaaa, type: 3}
   aimStart: {fileID: 4108368777318324}
+  sprayAngle: 15
 --- !u!114 &869408121549920783
 MonoBehaviour:
   m_ObjectHideFlags: 0

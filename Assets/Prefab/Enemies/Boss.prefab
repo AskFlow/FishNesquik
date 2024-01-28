@@ -203,6 +203,10 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: -172404313617634027}
   _networkObjectCache: {fileID: -172404313617634027}
   health: 3000
+  animator: {fileID: 0}
+  timeBeforeDestroy: 3
+  objToLoot: {fileID: 1634961190079951899, guid: bdbe277985361be4da705ae0495a9519, type: 3}
+  probabilityOfLoot: 100
 --- !u!114 &-4710461495712847420
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -220,13 +224,12 @@ MonoBehaviour:
   _networkObjectCache: {fileID: -172404313617634027}
   speed: 3
   rotationSpeed: 5
-  wheelRotationSpeed: 50
   pitchDistortionMovementSpeed:
     Min: 0.8
     Max: 1.2
   movementSound: {fileID: 8300000, guid: be7bcab1bdc983a40af44fa2330c00dc, type: 3}
   deathSound: {fileID: 8300000, guid: 623b7f0c57d1aa74e93ace127321a847, type: 3}
-  mustRotatesWheels: 0
+  wheelRotationSpeed: 50
   leftWheel: {fileID: 1855245367226062}
   rightWheel: {fileID: 1933460375180758}
   minTimeBetweenAttacks: 5

@@ -828,6 +828,8 @@ MonoBehaviour:
   health: 50
   animator: {fileID: 95435075854021746}
   timeBeforeDestroy: 3
+  objToLoot: {fileID: 1634961190079951899, guid: bdbe277985361be4da705ae0495a9519, type: 3}
+  probabilityOfLoot: 100
 --- !u!114 &8506192745422644373
 MonoBehaviour:
   m_ObjectHideFlags: 0

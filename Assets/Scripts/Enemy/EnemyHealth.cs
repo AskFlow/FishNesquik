@@ -34,27 +34,35 @@ public class EnemyHealth : NetworkBehaviour
 
     public IEnumerator DeathCoroutine()
     {
-        animator.SetBool("IsDead", true);
-        if(TryGetComponent(out EnemyKamikaze stopMovementKamikaze))
+        if (animator)
         {
-            stopMovementKamikaze.enabled = false;
+            animator.SetBool("IsDead", true);
+            if (TryGetComponent(out EnemyKamikaze stopMovementKamikaze))
+            {
+                stopMovementKamikaze.enabled = false;
 
+            }
+            if (TryGetComponent(out EnemyDistance stopMovementDistance))
+            {
+                stopMovementDistance.enabled = false;
+            }
+            if (TryGetComponent(out EnemyBoss stopMovementBoss))
+            {
+                stopMovementBoss.enabled = false;
+            }
         }
-        if(TryGetComponent(out EnemyDistance stopMovementDistance))
-        {
-            stopMovementDistance.enabled = false;
-        }
-        if (TryGetComponent(out EnemyBoss stopMovementBoss))
-        {
-            stopMovementBoss.enabled = false;
-        }
+        
         Canvas healthUI = GetComponentInChildren<Canvas>();
         healthUI.enabled = false;
-        while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Die"))
+
+        if (animator)
         {
-            yield return null;
+            while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Die"))
+            {
+                yield return null;
+            }
+            yield return new WaitForSeconds(timeBeforeDestroy);
         }
-        yield return new WaitForSeconds(timeBeforeDestroy);
 
         if (IsServer)
         {
