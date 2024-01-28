@@ -1,6 +1,8 @@
+using FishNet;
 using FishNet.Managing.Scened;
 using FishNet.Object;
-using FishNet;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -25,7 +27,7 @@ public class GameManager : MonoBehaviour
         }
         DontDestroyOnLoad(this.gameObject);
 
-
+        
     }
 
     public void StartGame()
@@ -34,7 +36,7 @@ public class GameManager : MonoBehaviour
         sceneLoad.MovedNetworkObjects = new NetworkObject[] { playerManager };
         sceneLoad.ReplaceScenes = ReplaceOption.All;
         InstanceFinder.SceneManager.LoadGlobalScenes(sceneLoad);
-        //playerManager.GetComponent<PlayerManager>().SpawnPlayer();
+        playerManager.GetComponent<PlayerManager>().SpawnPlayer();
 
 
     }

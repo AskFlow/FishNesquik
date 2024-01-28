@@ -5,6 +5,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -16,20 +17,55 @@ public class LobbyUI : NetworkBehaviour
     public GameObject parentClient;
     public GameObject parentOwner;
 
-    public Dictionary<NetworkConnection, NetworkObject> players = new Dictionary<NetworkConnection, NetworkObject>();
+    [SyncObject]
+    public readonly SyncDictionary<NetworkConnection, NetworkObject> players = new SyncDictionary<NetworkConnection, NetworkObject>();
+    [SyncVar]
+    public  NetworkObject owner;
 
-    public (NetworkConnection, GameObject) owner;
+    private PlayerManager playerManager;
 
-
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+    }
 
     public void Start()
     {
         if (IsServer)
         {
-            PlayerManager oui = FindObjectOfType<PlayerManager>();
-            oui.networkObjectAddedDelegate += OnPlayerAdded;
-            oui.networkObjectRemovedDelegate += OnPlayerRemoved;
+            playerManager = FindObjectOfType<PlayerManager>();
+            playerManager.networkObjectAddedDelegate += OnPlayerAdded;
+            playerManager.networkObjectRemovedDelegate += OnPlayerRemoved;
+            StartCoroutine(CheckIfPlayerReady());
         }
+    }
+
+
+    public IEnumerator CheckIfPlayerReady()
+    {
+        while (true)
+        {
+            if(players.Count > 0) 
+            {
+                if(CheckIfAllReady())
+                {
+                    GameManager.Instance.StartGame();
+                    break;
+
+                }
+            }
+            yield return new WaitForSeconds(1);
+            
+        }
+    }
+
+    public bool CheckIfAllReady()
+    {
+        foreach (var item in players)
+        {
+            if (!item.Value.GetComponent<PlayerCard>().isReady) { return false; }
+        }
+        return true;
     }
 
     [Server]
@@ -52,12 +88,25 @@ public class LobbyUI : NetworkBehaviour
         SetParent(go);
         players.Add(player, go);
 
+        if (player.IsHost)
+        {
+            owner = go;
+        }
+        else
+        {
+            players.Add(player, go);
+        }
+
     }
 
     [ServerRpc]
     public void OnPlayerRemoved(NetworkConnection player)
     {
-
+        if(players.TryGetValue(player, out NetworkObject parent))
+        {
+            parent.Despawn(DespawnType.Destroy);
+            players.Remove(player);
+        }
     }
 
 
@@ -68,46 +117,4 @@ public class LobbyUI : NetworkBehaviour
 
     }
 
-    [ServerRpc(RequireOwnership =false)]
-    public void PressReadyServerRpc(NetworkConnection conn)
-    {
-        players[conn].GetComponent<PlayerCard>().ToggleToggle();
-    }
-
-    [TargetRpc]
-    public void PressReadyUserRpc(NetworkConnection conn)
-    {
-
-    }
-
-    public void PressReady()
-    {
-
-        PressReadyServerRpc(Owner);
-
-
-        //if(IsServer)
-        //{
-        //    owner.Item2.GetComponent<PlayerCard>().isReady = !owner.Item2.GetComponent<PlayerCard>().isReady;
-        //}
-        //else
-        //{
-        //    foreach (var item in players)
-        //    {
-        //        if(OwnerId == item.Key.OwnerId)
-        //        {
-        //            item.Value.GetComponent<PlayerCard>().isReady = !item.Value.GetComponent<PlayerCard>().isReady;
-        //        }
-        //    }
-        //}
-    }
-
-    [ObserversRpc]
-    public void SetClientOwner(NetworkObject item, GameObject go)
-    {
-        if (IsOwner ||IsServer)
-        {
-            go.GetComponent<PlayerCard>().isPlayer = true;
-        }
-    }
 }
