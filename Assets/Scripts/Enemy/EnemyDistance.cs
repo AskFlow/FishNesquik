@@ -3,6 +3,7 @@ using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using System.Collections;
 using UnityEngine.AI;
+using FishNet.Example.ColliderRollbacks;
 
 public class EnemyDistance : NetworkBehaviour
 {
@@ -12,7 +13,9 @@ public class EnemyDistance : NetworkBehaviour
     public float rotationSpeed = 5f;
 
     [Header("Enemy Detection")]
-    private Transform nearestPlayer = null;
+    private Transform playerToAim = null;
+    private Vector3 directionToPlayer;
+    private Quaternion lookRotation;
 
     [Header("Audio Settings")]
     public AudioClip movementSound;
@@ -20,6 +23,12 @@ public class EnemyDistance : NetworkBehaviour
     private AudioSource audioSource;
     public MinMaxFloat pitchDistortionMovementSpeed;
 
+    [Header("Shoot")]
+    public GameObject projectilePrefab;
+    private bool isShooting = false;
+    private bool shouldShoot = false;
+    [SerializeField] private Transform aimStart;
+    private bool coroutineHasStarted = false;
 
     [System.Serializable]
     public struct MinMaxFloat
@@ -36,6 +45,7 @@ public class EnemyDistance : NetworkBehaviour
 
     private void Start()
     {
+        // Initialize audio source
         audioSource = gameObject.GetComponent<AudioSource>();
         audioSource.clip = movementSound;
         audioSource.loop = true;
@@ -45,20 +55,38 @@ public class EnemyDistance : NetworkBehaviour
     {
         if (IsServer)
         {
-            nearestPlayer = GetNearestPlayer();
-            bool alreadyShooting = CheckActivationDistance(nearestPlayer);
-            if (!alreadyShooting)
+            // Detect nearest player
+            playerToAim = GetNearestPlayer();
+            shouldShoot = CheckActivationDistance(playerToAim);
+
+            // Update rotation logic
+            directionToPlayer = playerToAim.position - transform.position;
+            directionToPlayer.y = 0f;
+            lookRotation = Quaternion.LookRotation(directionToPlayer.normalized);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
+
+            // Start shooting coroutine if should shoot
+            if (shouldShoot)
             {
-                ChaseNearestPlayer(nearestPlayer);
+                if (!isShooting && !coroutineHasStarted)
+                {
+                    isShooting = true;
+                    StartCoroutine(ShootCoroutine(1f));
+                }
             }
-        }
+            else
+            {
+                isShooting = false;
+                // Move towards nearest player
+                ChaseNearestPlayer(playerToAim);
 
-        // Movement sound
-        audioSource.pitch = Mathf.Lerp(pitchDistortionMovementSpeed.Min, pitchDistortionMovementSpeed.Max, speed);
-
-        if (!audioSource.isPlaying)
-        {
-            audioSource.Play();
+                // Movement sound
+                audioSource.pitch = Mathf.Lerp(pitchDistortionMovementSpeed.Min, pitchDistortionMovementSpeed.Max, speed);
+                if (!audioSource.isPlaying)
+                {
+                    audioSource.Play();
+                }
+            }
         }
     }
 
@@ -73,56 +101,63 @@ public class EnemyDistance : NetworkBehaviour
             if (distanceToPlayer < closestDistance)
             {
                 closestDistance = distanceToPlayer;
-                nearestPlayer = player.transform;
+                playerToAim = player.transform;
             }
         }
 
-        return nearestPlayer;
+        return playerToAim;
     }
 
     private void ChaseNearestPlayer(Transform nearestPlayer)
     {
         if (nearestPlayer != null)
         {
-            // Movement to the player
-            Vector3 directionToPlayer = nearestPlayer.position - transform.position;
+            // Calculate direction to player
+            directionToPlayer = nearestPlayer.position - transform.position;
             directionToPlayer.y = 0f;
 
-            // Rotation to look at the player
-            if (directionToPlayer.magnitude > 0.1f)
-            {
-                Quaternion lookRotation = Quaternion.LookRotation(directionToPlayer.normalized);
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
-            }
+            // Rotate towards player
+            lookRotation = Quaternion.LookRotation(directionToPlayer.normalized);
+            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * rotationSpeed);
 
-            // Movement
+            // Move towards player
             transform.Translate(directionToPlayer.normalized * speed * Time.deltaTime, Space.World);
         }
     }
 
     private bool CheckActivationDistance(Transform playerToAim)
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, playerToAim.position);
-
-        if (distanceToPlayer < shootingDistance)
+        if (playerToAim == null)
         {
-            ShootPlayer(playerToAim);
-            return true;
+            return false;
         }
-        
-        return false;
+
+        // Check distance to determine if enemy should shoot
+        float distanceToPlayer = Vector3.Distance(transform.position, playerToAim.position);
+        return distanceToPlayer < shootingDistance;
     }
 
-    private void ShootPlayer(Transform playerToShoot)
+    private IEnumerator ShootCoroutine(float timeBetweenShots)
     {
-        // Shoot logic here 
-        // TODO : shoot to the player, serv side
+        coroutineHasStarted = true;
+        while (isShooting)
+        {
+            // Shoot projectile towards aimStart position
+            Vector3 spawnPosition = aimStart.position;
+            Quaternion spawnRotation = Quaternion.LookRotation(playerToAim.position - aimStart.position);
+            GameObject projectileInstance = Instantiate(projectilePrefab, spawnPosition, spawnRotation);
+            ServerManager.Spawn(projectileInstance.gameObject);
+
+            // Wait for some time before shooting again
+            yield return new WaitForSeconds(timeBetweenShots);
+        }
+        coroutineHasStarted = false;
     }
 
+    // Delayed despawn coroutine
     public IEnumerator DelayedDespawn()
     {
         yield return new WaitForSeconds(0.1f);
-
         if (gameObject != null && gameObject.activeSelf)
         {
             gameObject.SetActive(false);

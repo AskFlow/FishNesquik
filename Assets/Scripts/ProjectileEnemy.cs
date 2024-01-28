@@ -1,7 +1,7 @@
 using FishNet.Object;
 using UnityEngine;
 
-public class Projectile : NetworkBehaviour
+public class ProjectileEnemy : NetworkBehaviour
 {
     [SerializeField]
     private float speed = 50f;
@@ -28,7 +28,7 @@ public class Projectile : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        if (other.CompareTag("Enemy"))
+        if (other.CompareTag("Player"))
         {
             ApplyDamage(other.gameObject, damage);
 
@@ -38,9 +38,9 @@ public class Projectile : NetworkBehaviour
                 Vector3 particlesPosition = other.gameObject.transform.position + new Vector3(0, 1f, 0);
                 Instantiate(hitParticle, particlesPosition, Quaternion.identity);
             }
-
         }
-        if (other.CompareTag("Player"))
+
+        if (other.CompareTag("Enemy"))
         {
             Despawn();
         }
@@ -50,9 +50,9 @@ public class Projectile : NetworkBehaviour
     [Server]
     private void ApplyDamage(GameObject resultHit, int damage)
     {
-        if (resultHit.TryGetComponent<EnemyHealth>(out EnemyHealth enemyHealth))
+        if (resultHit.TryGetComponent<PlayerHealth>(out PlayerHealth playerHealth))
         {
-            enemyHealth.UpdateHealth(-damage);
+            playerHealth.UpdateHealth(playerHealth , -damage);
         }
     }
 

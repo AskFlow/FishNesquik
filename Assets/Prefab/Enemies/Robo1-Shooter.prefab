@@ -619,11 +619,13 @@ MonoBehaviour:
   shootingDistance: 10
   speed: 2
   rotationSpeed: 5
+  movementSound: {fileID: 8300000, guid: be7bcab1bdc983a40af44fa2330c00dc, type: 3}
+  deathSound: {fileID: 8300000, guid: 623b7f0c57d1aa74e93ace127321a847, type: 3}
   pitchDistortionMovementSpeed:
     Min: 0
     Max: 0
-  movementSound: {fileID: 8300000, guid: be7bcab1bdc983a40af44fa2330c00dc, type: 3}
-  deathSound: {fileID: 8300000, guid: 623b7f0c57d1aa74e93ace127321a847, type: 3}
+  projectilePrefab: {fileID: 5897218871136879848, guid: ffe97752845a5824b8b6f0f5dbc6eaaa, type: 3}
+  aimStart: {fileID: 4108368777318324}
 --- !u!114 &869408121549920783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -671,7 +673,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 21
+  <PrefabId>k__BackingField: 28
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
