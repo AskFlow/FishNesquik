@@ -27,10 +27,7 @@ public class EnemyHealth : NetworkBehaviour
         {
             StartCoroutine(DeathCoroutine());
         }
-    }
-
-
-  
+    }  
 
     public IEnumerator DeathCoroutine()
     {
@@ -40,10 +37,10 @@ public class EnemyHealth : NetworkBehaviour
             if (TryGetComponent(out EnemyKamikaze stopMovementKamikaze))
             {
                 stopMovementKamikaze.enabled = false;
-
             }
             if (TryGetComponent(out EnemyDistance stopMovementDistance))
             {
+                stopMovementDistance.isDead = true;
                 stopMovementDistance.enabled = false;
             }
             if (TryGetComponent(out EnemyBoss stopMovementBoss))

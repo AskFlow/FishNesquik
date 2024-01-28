@@ -629,6 +629,7 @@ MonoBehaviour:
     Min: 0
     Max: 0
   projectilePrefab: {fileID: 5897218871136879848, guid: ffe97752845a5824b8b6f0f5dbc6eaaa, type: 3}
+  isDead: 0
   aimStart: {fileID: 4108368777318324}
   sprayAngle: 15
 --- !u!114 &869408121549920783
@@ -646,7 +647,7 @@ MonoBehaviour:
   _componentIndexCache: 2
   _addedNetworkObject: {fileID: 4746802322451413754}
   _networkObjectCache: {fileID: 4746802322451413754}
-  healthSlider: {fileID: 6609781635509795708}
+  healthSlider: {fileID: 2959470944714426369}
 --- !u!114 &4746802322451413754
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1074,14 +1075,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f60e7b0bb550074c979631ac7b8363e, type: 3}
---- !u!224 &5506419254160514076 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 7556791628908158911, guid: 7f60e7b0bb550074c979631ac7b8363e, type: 3}
-  m_PrefabInstance: {fileID: 2645203776053216163}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &6609781635509795708 stripped
+--- !u!114 &2959470944714426369 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9155553821917362399, guid: 7f60e7b0bb550074c979631ac7b8363e, type: 3}
+  m_CorrespondingSourceObject: {fileID: 983897933556976546, guid: 7f60e7b0bb550074c979631ac7b8363e, type: 3}
   m_PrefabInstance: {fileID: 2645203776053216163}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
@@ -1090,3 +1086,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &5506419254160514076 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7556791628908158911, guid: 7f60e7b0bb550074c979631ac7b8363e, type: 3}
+  m_PrefabInstance: {fileID: 2645203776053216163}
+  m_PrefabAsset: {fileID: 0}

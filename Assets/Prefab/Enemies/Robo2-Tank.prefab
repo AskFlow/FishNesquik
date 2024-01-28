@@ -744,6 +744,7 @@ MonoBehaviour:
     Min: 0
     Max: 0
   projectilePrefab: {fileID: 5897218871136879848, guid: ffe97752845a5824b8b6f0f5dbc6eaaa, type: 3}
+  isDead: 0
   aimStart: {fileID: 1294823123955559590}
   sprayAngle: 15
 --- !u!114 &8075528519803460479
@@ -761,7 +762,7 @@ MonoBehaviour:
   _componentIndexCache: 2
   _addedNetworkObject: {fileID: -6083907376259441108}
   _networkObjectCache: {fileID: -6083907376259441108}
-  healthSlider: {fileID: 4773468691665297694}
+  healthSlider: {fileID: 3501067396994929251}
 --- !u!114 &-6083907376259441108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1271,9 +1272,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7f60e7b0bb550074c979631ac7b8363e, type: 3}
---- !u!114 &4773468691665297694 stripped
+--- !u!114 &3501067396994929251 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 9155553821917362399, guid: 7f60e7b0bb550074c979631ac7b8363e, type: 3}
+  m_CorrespondingSourceObject: {fileID: 983897933556976546, guid: 7f60e7b0bb550074c979631ac7b8363e, type: 3}
   m_PrefabInstance: {fileID: 4409529581509417409}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
