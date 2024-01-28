@@ -25,6 +25,7 @@ public class EnemyDistance : NetworkBehaviour
 
     [Header("Shoot")]
     public GameObject projectilePrefab;
+    public bool isDead = false;
     private bool isShooting = false;
     private bool shouldShoot = false;
     [SerializeField] private Transform aimStart;
@@ -144,20 +145,23 @@ public class EnemyDistance : NetworkBehaviour
         coroutineHasStarted = true;
         while (isShooting)
         {
-            // Shoot projectile towards aimStart position
-            Vector3 spawnPosition = aimStart.position;
-            Quaternion randomRotation = Quaternion.Euler(Random.Range(-sprayAngle, sprayAngle), Random.Range(-sprayAngle, sprayAngle), 0f);
-            Vector3 finalDirection = randomRotation * (playerToAim.position - aimStart.position);
-            Quaternion spawnRotation = Quaternion.LookRotation(finalDirection);
-            // Quaternion spawnRotation = Quaternion.LookRotation(playerToAim.position - aimStart.position);
+            if (isDead == false)
+            {
+                // Shoot projectile towards aimStart position
+                Vector3 spawnPosition = aimStart.position;
+                Quaternion randomRotation = Quaternion.Euler(Random.Range(-sprayAngle, sprayAngle), Random.Range(-sprayAngle, sprayAngle), 0f);
+                Vector3 finalDirection = randomRotation * (playerToAim.position - aimStart.position);
+                Quaternion spawnRotation = Quaternion.LookRotation(finalDirection);
+                // Quaternion spawnRotation = Quaternion.LookRotation(playerToAim.position - aimStart.position);
 
-            GameObject projectileInstance = Instantiate(projectilePrefab, spawnPosition, spawnRotation);
-            ServerManager.Spawn(projectileInstance.gameObject);
+                GameObject projectileInstance = Instantiate(projectilePrefab, spawnPosition, spawnRotation);
+                ServerManager.Spawn(projectileInstance.gameObject);
+            }
 
             // Wait for some time before shooting again
             yield return new WaitForSeconds(timeBetweenShots);
+            coroutineHasStarted = false;
         }
-        coroutineHasStarted = false;
     }
 
     // Delayed despawn coroutine

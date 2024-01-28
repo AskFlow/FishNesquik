@@ -165,6 +165,6 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 6587355826196193688}
   _networkObjectCache: {fileID: 6587355826196193688}
   speed: 50
-  damage: 10
+  damage: 100
   lifetime: 3
   hitParticle: {fileID: 19800000, guid: ab1112643ee572748b01dede71158272, type: 3}
